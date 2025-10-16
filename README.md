@@ -11,7 +11,7 @@ En este trabajo de investigación se buscará determinar los patrones descriptiv
 - Tiburon Blanco
 - Tiburón Limón
 
-## Conceptos usados para esta investigación:
+## Conceptos clave usados para esta investigación:
 
 ### Tiburón
 Un tiburón es un pez cartilaginoso (perteneciente a la clase Chondrichthyes). Se caracterizan por un endoesqueleto sin costillas, dentículos dérmicos, de cinco a siete hendiduras branquiales a cada lado, aletas pectorales que no están fusionadas a la cabeza y escamas placoides.
