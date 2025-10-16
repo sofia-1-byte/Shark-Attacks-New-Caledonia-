@@ -1,2 +1,3 @@
-# Shark-Attacks-New-Caledonia-
-Trabajo final de Computación II 
+# Análisis de los ataques de tiburones registrados en el territorio francés de Nueva Caledonia (1886 - 2025)
+
+En este trabajo de investigación se buscará determinar los patrones descriptivos de riesgo asociados a los incidentes de tiburones registrados en Nueva Caledonia. Esto se logrará mediante el uso de datos obtenidos de los ataques registrados, como la ubicación, especie de tiburón involucrada, temporada del año, fecha y hora, entre otros valores. Todo esto a través de métodos de estadística descriptiva, con el fin de generar información que pueda ayudar a prevenir futuros encuentros inoportunos.
