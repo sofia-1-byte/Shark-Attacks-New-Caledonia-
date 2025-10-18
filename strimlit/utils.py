@@ -2,7 +2,8 @@ import sqlite3
 import pandas as pd
 
 base_de_datos = "/BBDD/shark_attacks.db"
-tabla = "nombre_de_tu_tabla"
+tabla = "shark_attacks"
+
 
 # para conectar bbdd
 def conectar_bd():
@@ -16,10 +17,11 @@ def conectar_bd():
         return None
 
 # para cargar datos
-def cargar_datos():
+def cargar_datos(tabla):
 
     conexion = conectar_bd()
     if conexion:
+
         try:
             query = f"SELECT * FROM {tabla};"
             datos = pd.read_sql_query(query, conexion)
@@ -52,3 +54,4 @@ def obtener_tablas_disponibles():
         finally:
             conexion.close()
     return []
+

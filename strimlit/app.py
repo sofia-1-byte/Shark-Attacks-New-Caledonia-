@@ -1,4 +1,6 @@
 import streamlit as st
+from twisted.web.http import datetimeToString
+
 import utils
 
 # Configuracion de la página
@@ -34,22 +36,35 @@ Objetivos Específicos
     Determinar si existe una mayor proporción de fatalidad al analizar los datos de la actividad (activity) vs la gravedad del incidente (is_fatal).
 """)
 
-# Sidebar con información adicional
-with st.sidebar:
-    st.header(" Datos en Tiempo Real")
 
+
+# Sidebar con información adicional
+tabla = "shark_attacks"
+
+
+#Pedimos la tabla que quiere visualizar el usuario
+with st.sidebar:
+    tabla = utils.obtener_tablas_disponibles()
+    st.write("""ingresa la tabla""")
+    tabla = st.selectbox(
+        "Seleccione una tabla",
+        tabla,
+    )
+
+
+    st.header(" Datos en Tiempo Real")
     if st.button("Cargar datos actualizados"):
         with st.spinner("Cargando datos..."):
-            datos = utils.cargar_datos()
+            datos = utils.cargar_datos(tabla)
 
             if datos is not None:
                 st.success(f" Se cargaron {len(datos)} registros")
                 st.metric("Total de registros", len(datos))
 
-                if st.checkbox("Mostrar vista previa"):
-                    st.dataframe(datos.head(10))
             else:
                 st.error("Error al cargar los datos")
+
+
 
     st.markdown("---")
     st.info("""
@@ -59,6 +74,13 @@ with st.sidebar:
     - Última actualización: Automática
     """)
 
+##Hace falta corregír el checkbox que no funciona
+if st.checkbox("Mostrar vista previa de los datos"):
+    st.write(datos.head(5))
+
+
+
 # Pie de página
 st.markdown("---")
 st.caption("")
+
