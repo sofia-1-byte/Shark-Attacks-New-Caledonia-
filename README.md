@@ -2,14 +2,11 @@
 
 En este trabajo de investigación se buscará determinar los patrones descriptivos de riesgo asociados a los incidentes de tiburones registrados a nivel global. Esto se logrará mediante el uso de datos obtenidos de los ataques registrados, como la ubicación, especie de tiburón involucrada, temporada del año, fecha y hora, entre otros valores. Todo esto a través de métodos de estadística descriptiva, con el fin de generar información que pueda ayudar a prevenir futuros encuentros inoportunos.
 
-#### Las principales especies de tiburones involucradas en incidentes son las siguientes:
+#### Las principales especies de tiburones involucradas en incidentes son:
 - Gran Tiburón Blanco
 - Tiburón Tigre
 - Tiburón Toro
 
-#### Y en menor medida:
-- Tiburon Blanco
-- Tiburón Limón
 
 ## Conceptos clave usados para esta investigación:
 
