@@ -2,6 +2,7 @@ import sqlite3
 import streamlit as st
 import pandas as pd
 import numpy as np
+import plotly.express as px
 from typing import Optional, Dict, Any
 import os
 from scipy import stats
@@ -46,7 +47,7 @@ def _conectar_bd() -> Optional[sqlite3.Connection]:
 @st.cache_data(show_spinner="cargando y limpiando datos...")
 def load_and_clean_data() -> pd.DataFrame:
     """
-    carga los datos desde la base de datos y realiza procesos de limpieza
+    carga los datos desde la base de datos y realiza procesos de limpieza y devuelve un dataframe
     returns:
         dataframe: dataframe con los datos limpios o dataframe vacio si hay error
     """
@@ -97,6 +98,10 @@ def load_and_clean_data() -> pd.DataFrame:
         df['day_part'] = df['day_part'].astype(str).str.upper().str.strip()
         df.loc[df['day_part'].str.upper().isin(UNKNOWN_VALUES), 'day_part'] = 'Desconocido'
         df.loc[df['day_part'].isna(), 'day_part'] = 'Desconocido'
+
+
+        df.loc[df['species'].isin(UNKNOWN_VALUES), 'species'] = 'Desconocido'
+        df.loc[df['species'].isna(), 'species'] = 'Desconocido'
         
         df['age'] = pd.to_numeric(df['age'], errors='coerce')
         df['age'] = df['age'].apply(lambda x: x if pd.notna(x) and 0 <= x <= 100 else np.nan)
@@ -458,3 +463,39 @@ def cargar_datos_y_estadisticas():
     df = load_and_clean_data()
     estadisticas = obtener_estadisticas_completas(df) if not df.empty else {}
     return df, estadisticas
+
+###Función para visualizar gráficos:
+def grafico_pie(columna: str, excluir: bool = False) :
+    """ Genera un gráfico de pie según las proporciones de las columnas de la
+    Parameters:
+        columna (str): columna de tablas
+        excluir (bool, optional): decidir si se excluyen valores desconocidos
+
+    """
+
+    ##Cargar el dataframe.
+    df = load_and_clean_data()
+
+    ##Analizar frecuencias de los fatales
+    df_grafico = analizar_frecuencias(df, columna, excluir)
+    #print(df_fatals.head())
+
+    ##Condicionar titulos para el gráfico de pie según las variables
+    if columna == "activity":
+        title = "Proporcion de ataques según actividad"
+    elif columna == "is_fatal_cat":
+        title = "Proporción de ataques según fatalidad"
+    elif columna == "season":
+        title = "Proporción de ataques según Temporada"
+    elif columna == "sex":
+        title = "Proporción de ataques según sexo de las víctimas"
+    elif columna == "species":
+        title = "Proporción de ataques según la Especie de Tiburón"
+    elif columna == "day_part":
+        title = "Proporción de ataques según el horario"
+
+
+    ## Construcción del gráfico
+    pie_grafico = px.pie(df_grafico, values='Frecuencia Absoluta', names='Categoria',
+                  title=title)
+    return pie_grafico
