@@ -407,3 +407,40 @@ def mostrar_consulta(funcion_consulta, titulo, descripcion, codigo_sql):
         st.warning("no se encontraron datos para esta consulta")
     
     st.markdown("---")
+
+def grafico_pie(columna: str, excluir: bool = False) :
+    """ Genera un gráfico de pie según las proporciones de las columnas de la
+    Parameters:
+        columna (str): columna de tablas
+        excluir (bool, optional): decidir si se excluyen valores desconocidos
+
+    """
+
+    ##Cargar el dataframe.
+
+    df = load_and_clean_data()
+
+    ##Analizar frecuencias de los fatales
+    df_grafico = analizar_frecuencias(df, columna, excluir)
+    #print(df_fatals.head())
+
+    ##Condicionar titulos para el gráfico de pie según las variables
+    if columna == "activity":
+        title = "Proporcion de ataques según actividad"
+    elif columna == "is_fatal_cat":
+        title = "Proporción de ataques según fatalidad"
+    elif columna == "season":
+        title = "Proporción de ataques según Temporada"
+    elif columna == "sex":
+        title = "Proporción de ataques según sexo de las víctimas"
+    elif columna == "species":
+        title = "Proporción de ataques según la Especie de Tiburón"
+    elif columna == "day_part":
+        title = "Proporción de ataques según el horario"
+
+
+    ## Construcción del gráfico
+    pie_grafico = px.pie(df_grafico, values='Frecuencia Absoluta', names='Categoria',
+                  title=title)
+    return pie_grafico
+
