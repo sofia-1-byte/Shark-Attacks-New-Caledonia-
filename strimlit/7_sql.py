@@ -202,4 +202,4 @@ with col3:
 
 
 st.markdown("---")
-st.caption("consultas sql - sistema de analisis de ataques de tiburon | nueva caledonia")
+st.caption("Análisis Descriptivo de Ataques de Tiburón | Consultas SQL")

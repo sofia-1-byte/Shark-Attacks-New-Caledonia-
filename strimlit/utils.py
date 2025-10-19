@@ -448,3 +448,13 @@ def cargar_logo():
         return None
     except Exception:
         return None
+    
+def cargar_datos_y_estadisticas():
+    """
+    carga los datos y calcula las estadisticas necesarias
+    returns:
+        tuple: dataframe con datos y diccionario con estadisticas
+    """
+    df = load_and_clean_data()
+    estadisticas = obtener_estadisticas_completas(df) if not df.empty else {}
+    return df, estadisticas

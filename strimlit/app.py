@@ -158,4 +158,4 @@ st.markdown("""
 
 # footer
 st.markdown("---")
-st.caption("shark attack analytics | analisis de patrones de ataques de tiburon | nueva caledonia")
+st.caption("Análisis Descriptivo de Ataques de Tiburón | Resumen")

@@ -10,18 +10,8 @@ st.set_page_config(
 st.title("Analisis Descriptivo de Datos")
 st.markdown("---")
 
-@st.cache_data
-def cargar_datos_y_estadisticas():
-    """
-    carga los datos y calcula las estadisticas necesarias
-    returns:
-        tuple: dataframe con datos y diccionario con estadisticas
-    """
-    df = utils.load_and_clean_data()
-    estadisticas = utils.obtener_estadisticas_completas(df) if not df.empty else {}
-    return df, estadisticas
-
-df, estadisticas = cargar_datos_y_estadisticas()
+# Cargar datos 
+df, estadisticas = utils.cargar_datos_y_estadisticas()
 
 if df.empty:
     st.error("no se pudieron cargar los datos.")
@@ -35,6 +25,14 @@ tabla_fatalidad = utils.analizar_frecuencias(df, 'is_fatal_cat', excluir_descono
 
 if not tabla_fatalidad.empty:
     st.dataframe(tabla_fatalidad, use_container_width=True)
+    
+    st.markdown("""
+    <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
+    
+    ## Interpretación 
+    
+    </div>
+    """, unsafe_allow_html=True)
     
     st.subheader("estadisticas descriptivas")
     
@@ -55,6 +53,14 @@ tabla_actividades = utils.analizar_frecuencias(df, 'activity', excluir_desconoci
 if not tabla_actividades.empty:
     st.dataframe(tabla_actividades, use_container_width=True)
     
+    st.markdown("""
+    <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
+    
+    ## Interpretación 
+    
+    </div>
+    """, unsafe_allow_html=True)
+    
     st.subheader("Estadisticas Descriptivas")
     st.write("5 actividades mas atacadas:")
     
@@ -69,6 +75,14 @@ tabla_paises = utils.analizar_frecuencias(df, 'country', excluir_desconocido=Tru
 
 if not tabla_paises.empty:
     st.dataframe(tabla_paises, use_container_width=True)
+
+    st.markdown("""
+    <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
+    
+    ## Interpretación 
+    
+    </div>
+    """, unsafe_allow_html=True)
 
     st.subheader("Estadisticas Descriptivas")
     st.write("Top 5 Paises Mas Atacados:")
@@ -102,6 +116,14 @@ if tablas_edad:
     with tab4:
         st.dataframe(tablas_edad['rel_columna'], use_container_width=True)
 
+st.markdown("""
+<div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
+
+## Interpretación 
+
+</div>
+""", unsafe_allow_html=True)
+
 st.subheader("Estadisticas Descriptivas de la Edad")
 
 if not estadisticas['estadisticas_edad'].empty:
@@ -115,6 +137,14 @@ tabla_estaciones = utils.analizar_frecuencias(df, 'season', excluir_desconocido=
 
 if not tabla_estaciones.empty:
     st.dataframe(tabla_estaciones, use_container_width=True)
+    
+    st.markdown("""
+    <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
+    
+    ## Interpretación
+    
+    </div>
+    """, unsafe_allow_html=True)
     
     st.subheader("Estadisticas Descriptivas")
     st.write("Top Estaciones con Mas Ataques:")
@@ -143,6 +173,14 @@ if tablas_actividad:
     with tab4:
         st.dataframe(tablas_actividad['rel_columna'], use_container_width=True)
 
+st.markdown("""
+<div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
+
+## Interpretación 
+
+</div>
+""", unsafe_allow_html=True)
+
 st.subheader("Estadisticas Descriptivas")
 
 if not estadisticas['tasas_actividad'].empty:
@@ -160,4 +198,4 @@ if not estadisticas['tasas_actividad'].empty:
             st.write(f"{i}. {actividad}: {row['Tasa Fatalidad %']}%")
 
 st.markdown("---")
-st.caption("Shark Attack Analytics | Analisis Descriptivo Completo")
+st.caption("Análisis Descriptivo de Ataques de Tiburón | Estadísticas Descriptivas")

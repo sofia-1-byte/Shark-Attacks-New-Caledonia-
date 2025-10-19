@@ -30,3 +30,4 @@ st.write("""
 """)
 
 st.markdown("---")
+st.caption("Análisis Descriptivo de Ataques de Tiburón | Objetivos del Estudio")
