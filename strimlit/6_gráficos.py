@@ -1,13 +1,14 @@
 import pandas as pd
 import plotly.express as px
 import streamlit as st
-import utils
+import utils 
 
 #Título
 st.write("""Graficos""")
 
 #Varibles del fronend
 column = ["Tipo de Actividad", "Fatalidad", "Temporada", "Sexo", "Especie de Tiburón", "AM,PM"]
+
 df = utils.load_and_clean_data()
 
 #Select box para el tipo de variable
@@ -28,6 +29,9 @@ elif columna == "Especie de Tiburón":
 elif columna == "AM,PM":
     columna = "day_part"
 
+
 st.write(df)
 st.write(utils.grafico_pie(columna, True))
+
+
 

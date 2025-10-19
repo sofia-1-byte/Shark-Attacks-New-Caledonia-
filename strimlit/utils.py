@@ -474,10 +474,10 @@ def grafico_pie(columna: str, excluir: bool = False) :
     """
 
     ##Cargar el dataframe.
-    df = utils.load_and_clean_data()
+    df = load_and_clean_data()
 
     ##Analizar frecuencias de los fatales
-    df_grafico = utils.analizar_frecuencias(df, columna, excluir)
+    df_grafico = analizar_frecuencias(df, columna, excluir)
     #print(df_fatals.head())
 
     ##Condicionar titulos para el gráfico de pie según las variables
