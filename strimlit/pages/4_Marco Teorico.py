@@ -194,4 +194,18 @@ Permanecer en grupos, ya que los individuos solitarios tienen mayor riesgo de se
 """, unsafe_allow_html=True)
 
 st.markdown("---")
+
+# Sección: Estatus de conservación de tiburones  
+st.markdown("### Estatus de conservación de tiburones  ")
+
+st.markdown("""
+<div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
+
+###texto
+
+            
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("---")
 st.caption("Análisis Descriptivo de Ataques de Tiburón | Marco Teórico")
