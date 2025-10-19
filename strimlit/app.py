@@ -2,8 +2,7 @@ import streamlit as st
 import utils
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
-import base64
+from PIL import Image
 import os
 
 st.set_page_config(
@@ -13,76 +12,42 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# logos 
-LOGO_IMAGE1 = "logos-Ucv.png"  
-LOGO_IMAGE2 = "logos-EECA.png" 
-
-# funcion para cargar y codificar imagenes base64
-def get_base64_image(image_path):
+# Cargar logo UCV
+def cargar_logo():
     try:
-        with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode()
+        # Intentar diferentes rutas posibles
+        rutas = ["Logo-Ucv.png", "logos/Logo-Ucv.png", "./Logo-Ucv.png"]
+        for ruta in rutas:
+            if os.path.exists(ruta):
+                return Image.open(ruta)
+        return None
     except:
-        return ""
+        return None
 
-# header con logos
-logo1_base64 = get_base64_image(LOGO_IMAGE1)
-logo2_base64 = get_base64_image(LOGO_IMAGE2)
+# Cargar logo
+logo_ucv = cargar_logo()
 
-st.markdown(
-    f"""
-    <div style="background-color:#4991f5;padding:10px;display:flex;justify-content:space-between;align-items:center;margin-top:-30px;">
-        <img src="data:image/png;base64,{logo1_base64}" style="height:40px;margin:30px;">
-        <img src="data:image/png;base64,{logo2_base64}" style="height:40px;margin:30px;">
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+# Header simple con solo logo UCV
+col1, col2 = st.columns([1, 4])
 
-# estilos css personalizados
-st.markdown(
-    """
-    <style>
-    :root {
-        --primary-color: #4991f5;
-    }
-    body {
-        color: #0a0a0a;
-        background-color: #f5f5f5;
-        font-family: 'Calibri', sans-serif;
-    }
-    .block-container {
-        border-left: 1px solid var(--primary-color);
-        border-right: 1px solid var(--primary-color);
-        border-top: 1px solid var(--primary-color);
-    }
-    .main-title {
-        color: #4991f5;
-        text-align: center;
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-    }
-    .section-header {
-        color: #4991f5;
-        border-bottom: 2px solid #7ca0fb;
-        padding-bottom: 0.5rem;
-        margin-top: 2rem;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+with col1:
+    if logo_ucv:
+        st.image(logo_ucv, width=80)
 
-# titulo principal
-st.markdown('<h1 class="main-title">analisis de patrones de ataques de tiburones en nueva caledonia</h1>', unsafe_allow_html=True)
+with col2:
+    st.markdown('<h1 style="color:#4991f5;margin-top:20px;">analisis descriptivo de patrones de ataques de tiburones</h1>', unsafe_allow_html=True)
 
-# introduccion
+st.markdown("---")
+
+# Introduccion
+st.markdown("### introduccion")
 st.markdown("""
-### introduccion
+los ataques de tiburon representan un fenomeno de interes tanto para la seguridad publica como para la conservacion marina. 
+en nueva caledonia, territorio con una rica biodiversidad marina, estos incidentes tienen implicaciones importantes para el turismo, 
+las actividades recreativas y la percepcion publica sobre los tiburones.
+""")
 
-""", unsafe_allow_html=True)
-
-# carga de datos
+# Carga de datos
 @st.cache_data
 def cargar_datos():
     return utils.load_and_clean_data()
@@ -94,12 +59,12 @@ if df.empty:
     st.error("no se pudieron cargar los datos. verifique la conexion a la base de datos.")
     st.stop()
 
-# metricas principales
+# Metricas principales
 estadisticas = utils.obtener_estadisticas_completas(df)
 metricas = estadisticas['metricas_basicas']
 
 st.markdown("---")
-st.markdown('<h2 class="section-header">metricas principales</h2>', unsafe_allow_html=True)
+st.markdown("### metricas principales")
 
 col1, col2, col3, col4 = st.columns(4)
 with col1:
@@ -111,9 +76,9 @@ with col3:
 with col4:
     st.metric("tasa de fatalidad", f"{metricas['tasa_fatalidad']:.1f}%")
 
-# objetivos del proyecto
+# Objetivos
 st.markdown("---")
-st.markdown('<h2 class="section-header">objetivos del estudio</h2>', unsafe_allow_html=True)
+st.markdown("### objetivos del estudio")
 
 col_obj1, col_obj2 = st.columns(2)
 
@@ -128,17 +93,14 @@ with col_obj1:
 
 with col_obj2:
     st.subheader("objetivos especificos")
-    objetivos = [
-        "analizar cuantos ataques terminan en muerte para calcular que porcentaje de los incidentes son fatales",
-        "evaluar el riesgo por tipo de actividad humana y determinar que actividad concentra mas ataques",
-        "delimitar la zona geografica donde ocurren los ataques e identificar las areas con mas incidentes",
-        "describir el perfil de las victimas calculando media y mediana de edad y distribucion por sexo",
-        "estudiar cuando ocurren los ataques usando datos por estacion del año y hora del dia",
-        "revisar si hay relacion entre la actividad humana y la gravedad del ataque"
-    ]
-    
-    for i, objetivo in enumerate(objetivos, 1):
-        st.write(f"{i}. {objetivo}")
+    st.write("• analizar cuantos ataques terminan en muerte para calcular que porcentaje de los incidentes son fatales")
+    st.write("• evaluar el riesgo por tipo de actividad humana y determinar que actividad concentra mas ataques")
+    st.write("• delimitar la zona geografica donde ocurren los ataques e identificar las areas con mas incidentes")
+    st.write("• describir el perfil de las victimas calculando media y mediana de edad y distribucion por sexo")
+    st.write("• estudiar cuando ocurren los ataques usando datos por estacion del año y hora del dia")
+    st.write("• revisar si hay relacion entre la actividad humana y la gravedad del ataque")
+
+
 
 # visualizacion de datos basicos
 st.markdown("---")
