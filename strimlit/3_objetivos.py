@@ -9,7 +9,7 @@ st.title("Objetivos del Estudio")
 st.markdown("---")
 
 st.header("Objetivo General")
-st.write("Este trabajo busca identificar los patrones de riesgo relacionados con los incidentes de tiburones en nueva caledonia. se usaran las caracteristicas de los ataques, las victimas y el entorno, como actividad, lugar y tiempo. se aplicaran metodos estadisticos simples para crear informacion que ayude a prevenir estos incidentes.")
+st.write("Determinar los patrones descriptivos de los incidentes relacionados a ataques de tiburones registrados por todo el mundo, desde el año 1595 hasta la actualidad, mediante el uso de técnicas de estadística descriptiva, con el fin de generar información que pueda ayudar a prevenir futuros encuentros inoportunos.")
 
 st.markdown("---")
 
