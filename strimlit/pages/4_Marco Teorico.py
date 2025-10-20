@@ -201,7 +201,31 @@ st.markdown("### Estatus de conservación de tiburones  ")
 st.markdown("""
 <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
 
-###texto
+El estatus de conservación de los tiburones es preocupante, ya que más de un tercio de las especies se encuentran amenazadas de extinción. A nivel global, las poblaciones de tiburones y rayas oceánicas han disminuido en un 71% en los últimos 50 años, principalmente a causa de la sobrepesca.
+
+- Causas principales de la amenaza:
+
+1. Sobrepesca: Es la principal amenaza. Cientos de millones de tiburones son capturados anualmente para obtener carne y aletas, o como pesca incidental (captura no intencionada) en otras pesquerías.
+
+2. Mercado de aletas de tiburón: La demanda de aletas para el mercado asiático es un motor importante de la pesca insostenible.
+
+3. Tasas de reproducción lentas: Los tiburones maduran sexualmente a una edad tardía y tienen pocas crías, lo que los hace muy vulnerables a la sobreexplotación y dificulta la recuperación de sus poblaciones.
+
+4. Pérdida y degradación del hábitat: La destrucción y contaminación de ecosistemas costeros impacta negativamente en las áreas donde viven, se alimentan y se reproducen.
+
+5. Comercio ilegal: La pesca ilegal, no regulada y no declarada agrava el problema, especialmente para las especies migratorias que se desplazan por aguas desprotegidas. 
+
+- Ejemplos de especies amenazadas:
+
+1. Tiburón ballena: Considerado en peligro de extinción, con poblaciones estimadas entre 200.000 y 240.000 ejemplares.
+
+2. Tiburón martillo: El tiburón martillo gigante (Sphyrna lewini) está en peligro crítico de extinción debido a la pesca ilegal y el comercio de aletas.
+
+3. Tiburón blanco: Clasificado como vulnerable  debido a la pesca no objetivo y la persecución.
+
+4. Tiburón tigre: Los expertos lo consideran casi amenazado, destacando la reducción de su población por la pesca selectiva y accidental. 
+
+
 
             
 </div>
