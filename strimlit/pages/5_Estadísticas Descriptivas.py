@@ -29,7 +29,7 @@ if not tabla_fatalidad.empty:
     st.markdown("""
     <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
     
- Se puede observar que de un total de 5001 ataques registrados, 3902 ataques son ataques no fatales, representando un 78% del total. Mientras que solo 1099 ataques son registrados como fatales, siendo un 22% del total.
+ Se puede observar que de un total de 5001 ataques registrados, 3902 ataques son ataques no fatales, representando un 78% del total. Mientras que solo 1099 ataques son registrados como fatales, siendo un 22% del total. Esto indica que los ataques de tiburones poseen una baja tasa de fatalidad.
     
 
                          
@@ -129,7 +129,11 @@ if tablas_edad:
 st.markdown("""
 <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
 
-## Interpretación 
+ La gran mayoría de víctimas de estos encuentros inoportunos poseen una edad en el rango de entre 19 a 30 años, con un total de 3084 ataques de tiburón a este grupo, siendo con diferencia el grupo de edad más afectado con un porcentaje del 61.67%. 
+ Los demás grupos de edad afectados en orden son: entre 18 a 20 años con 816 afectados (un 16,32%), entre 31 a 45 años con 690 afectados (13,8%), entre 46 a 60 años con 316 afectados (6,32%), y el grupo menos afectado son las personas mayores a 60 años con solo 95 victimas (1,9%).
+
+ La media de edad de las víctimas es de 26,59 años, con una desviación de 11,02 años con respecto a la media.
+
 
 </div>
 """, unsafe_allow_html=True)
