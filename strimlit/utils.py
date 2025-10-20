@@ -108,59 +108,68 @@ def load_and_clean_data() -> pd.DataFrame:
         return pd.DataFrame()
 
 def analizar_frecuencias(_df: pd.DataFrame, columna: str, excluir_desconocido: bool = True) -> pd.DataFrame:
-    """
-    analiza las frecuencias de valores en una columna categorica
-    parametros:
-        _df: dataframe - dataframe con los datos
-        columna: str - nombre de la columna a analizar
-        excluir_desconocido: bool - si es verdadero excluye valores desconocidos
-    returns:
-        dataframe: tabla con frecuencias absolutas y relativas
-    """
+
     if columna not in _df.columns:
         return pd.DataFrame()
-    
+
     df_filtrado = _df[_df[columna] != 'Desconocido'] if excluir_desconocido else _df
-    
+
     if df_filtrado.empty:
         return pd.DataFrame()
-    
+
+    # Frecuencias basicas
     frecuencias = df_filtrado[columna].value_counts(dropna=False)
     total = frecuencias.sum()
-    
-    return pd.DataFrame({
+
+    # Crear dataframe base
+    resultado = pd.DataFrame({
         'Categoria': frecuencias.index,
         'Frecuencia Absoluta': frecuencias.values,
         'Frecuencia Relativa': (frecuencias.values / total).round(4),
         'Frecuencia Relativa %': (frecuencias.values / total * 100).round(2)
     }).sort_values('Frecuencia Absoluta', ascending=False).reset_index(drop=True)
 
+    return resultado
+
 def crear_tablas_doble_entrada(_df: pd.DataFrame, fila: str, columna: str) -> Dict[str, pd.DataFrame]:
     """
-    crea tablas de doble entrada entre dos variables
-    parametros:
-        _df: dataframe - dataframe con los datos
-        fila: str - nombre de la variable para las filas
-        columna: str - nombre de la variable para las columnas
-    returns:
-        dict: diccionario con diferentes tipos de tablas de contingencia
+    crea tablas de doble entrada entre dos variables con distribuciones condicionales
     """
     if fila not in _df.columns or columna not in _df.columns:
         return {}
-    
+
     df_filtrado = _df[(_df[fila] != 'Desconocido') & (_df[columna] != 'Desconocido')].copy()
-    
+
     if df_filtrado.empty:
         return {}
-    
+
     tabla_absoluta = pd.crosstab(df_filtrado[fila], df_filtrado[columna], margins=True, margins_name="Total")
     total_general = tabla_absoluta.loc['Total', 'Total']
-    
+
+    tabla_porcentaje_total = (tabla_absoluta / total_general * 100).round(2)
+
+    tabla_condicional_filas = tabla_absoluta.copy().drop('Total', axis=1).drop('Total', axis=0)
+    tabla_condicional_filas = tabla_condicional_filas.div(tabla_condicional_filas.sum(axis=1), axis=0) * 100
+    tabla_condicional_filas = tabla_condicional_filas.round(2)
+
+    tabla_condicional_columnas = tabla_absoluta.copy().drop('Total', axis=1).drop('Total', axis=0)
+    tabla_condicional_columnas = tabla_condicional_columnas.div(tabla_condicional_columnas.sum(axis=0), axis=1) * 100
+    tabla_condicional_columnas = tabla_condicional_columnas.round(2)
+
+    tabla_condicional_filas['Total'] = 100.0
+    tabla_condicional_columnas.loc['Total'] = 100.0
+
     return {
         'absoluta': tabla_absoluta,
-        'rel_total': (tabla_absoluta / total_general * 100).round(2),
-        'rel_fila': tabla_absoluta.div(tabla_absoluta.sum(axis=1), axis=0).round(4) * 100,
-        'rel_columna': tabla_absoluta.div(tabla_absoluta.sum(axis=0), axis=1).round(4) * 100
+        'porcentaje_total': tabla_porcentaje_total,
+        'condicional_filas': tabla_condicional_filas,  # P(columna|fila) - cada fila suma 100%
+        'condicional_columnas': tabla_condicional_columnas,  # P(fila|columna) - cada columna suma 100%
+        'explicacion': {
+            'absoluta': "Frecuencias absolutas de casos",
+            'porcentaje_total': "Porcentaje sobre el total general (base: 100% = total de casos)",
+            'condicional_filas': f"Distribución condicional de {columna} dado {fila} - cada fila suma 100%",
+            'condicional_columnas': f"Distribución condicional de {fila} dado {columna} - cada columna suma 100%"
+        }
     }
 
 

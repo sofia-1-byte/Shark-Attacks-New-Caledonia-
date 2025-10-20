@@ -110,11 +110,11 @@ if tablas_edad:
     with tab1:
         st.dataframe(tablas_edad['absoluta'], use_container_width=True)
     with tab2:
-        st.dataframe(tablas_edad['rel_total'], use_container_width=True)
+        st.dataframe(tablas_edad['porcentaje_total'], use_container_width=True)
     with tab3:
-        st.dataframe(tablas_edad['rel_fila'], use_container_width=True)
+        st.dataframe(tablas_edad['condicional_filas'], use_container_width=True)
     with tab4:
-        st.dataframe(tablas_edad['rel_columna'], use_container_width=True)
+        st.dataframe(tablas_edad['condicional_columnas'], use_container_width=True)
 
 st.markdown("""
 <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
@@ -167,11 +167,11 @@ if tablas_actividad:
     with tab1:
         st.dataframe(tablas_actividad['absoluta'], use_container_width=True)
     with tab2:
-        st.dataframe(tablas_actividad['rel_total'], use_container_width=True)
+        st.dataframe(tablas_actividad['porcentaje_total'], use_container_width=True)
     with tab3:
-        st.dataframe(tablas_actividad['rel_fila'], use_container_width=True)
+        st.dataframe(tablas_actividad['condicional_filas'], use_container_width=True)
     with tab4:
-        st.dataframe(tablas_actividad['rel_columna'], use_container_width=True)
+        st.dataframe(tablas_actividad['condicional_columnas'], use_container_width=True)
 
 st.markdown("""
 <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
