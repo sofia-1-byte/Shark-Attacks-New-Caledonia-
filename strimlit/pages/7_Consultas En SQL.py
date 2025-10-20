@@ -4,7 +4,7 @@ import pandas as pd
 import os
 
 st.set_page_config(
-    page_title="consultas sql - ataques de tiburon",
+    page_title="Consultas SQL - Ataques de tiburón",
     page_icon="",
     layout="wide"
 )
@@ -13,7 +13,7 @@ st.set_page_config(
 col1, col2 = st.columns([3, 1])
 
 with col1:
-    st.markdown('<h1 style="color:#4991f5;margin-top:20px;">consultas sql - analisis de ataques de tiburon</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 style="color:#4991f5;margin-top:20px;">Consultas SQL - Análisis de ataques de tiburón</h1>', unsafe_allow_html=True)
 
 with col2:
     # Aquí puedes agregar contenido si lo necesitas
@@ -38,8 +38,8 @@ ORDER BY cantidad_ataques DESC;
 
 utils.mostrar_consulta(
     utils.obtener_ataques_por_estacion,
-    "1. ataques de tiburon por estacion del año",
-    "muestra cuantos ataques de tiburones ocurrieron en cada estacion del año, ordenados de mayor a menor frecuencia.",
+    "1. Ataques de tiburón por estación del año",
+    "Muestra cuantos ataques de tiburones ocurrieron en cada estación del año, ordenados de mayor a menor frecuencia.",
     codigo1
 )
 
@@ -59,8 +59,8 @@ LIMIT 5;
 
 utils.mostrar_consulta(
     utils.obtener_top5_actividades_fatales,
-    "2. top 5 actividades con mas ataques fatales",
-    "determina el numero de ataques fatales segun la actividad realizada, mostrando solo las cinco actividades con mas ataques fatales.",
+    "2. Top 5 actividades con más ataques fatales",
+    "Determina el número de ataques fatales según la actividad realizada, mostrando solo las cinco actividades con más ataques fatales.",
     codigo2
 )
 
@@ -79,8 +79,8 @@ ORDER BY cantidad_ataques DESC;
 
 utils.mostrar_consulta(
     utils.obtener_ataques_por_fase_lunar,
-    "3. ataques por fase lunar",
-    "relaciona la fase lunar con la cantidad de ataques ocurridos bajo cada una, mostrando el porcentaje respecto al total.",
+    "3. Ataques por fase lunar",
+    "Relaciona la fase lunar con la cantidad de ataques ocurridos bajo cada una, mostrando el porcentaje respecto al total.",
     codigo3
 )
 
@@ -99,8 +99,8 @@ WHERE a.species IS NOT NULL
 
 utils.mostrar_consulta(
     utils.obtener_especies_conservacion,
-    "4. especies implicadas con categoria de conservacion",
-    "enlista las especies implicadas en ataques junto con su categoria de conservacion y descripcion mostrando solo una fila por especie.",
+    "4. Especies implicadas con categoria de conservacion",
+    "Enlista las especies implicadas en ataques junto con su categoria de conservación y descripción mostrando solo una fila por especie.",
     codigo4
 )
 
@@ -133,21 +133,21 @@ ORDER BY MIN(year);
 
 utils.mostrar_consulta(
     utils.obtener_ataques_fatales_por_decada,
-    "5. ataques fatales por decada",
-    "cuenta el numero de ataques fatales por decada, usando la columna year. crea una nueva columna llamada decada que agrupe los años desde 1900 hasta 2025.",
+    "5. Ataques fatales por decada",
+    "Cuenta el número de ataques fatales por década, usando la columna year. Crea una nueva columna llamada década que agrupe los años desde 1900 hasta 2025.",
     codigo5
 )
 
 # resumen 
-st.markdown("### resumen")
+st.markdown("### Resumen")
 
 col1, col2, col3 = st.columns(3)
 
 with col1:
     st.metric(
-        "total consultas ejecutadas", 
+        "Total consultas ejecutadas", 
         "5",
-        "consultas sql completadas"
+        "Consultas SQL completadas"
     )
 
 with col2:
@@ -155,18 +155,18 @@ with col2:
     df_estaciones = utils.obtener_ataques_por_estacion()
     total_estaciones = len(df_estaciones) if not df_estaciones.empty else 0
     st.metric(
-        "estaciones analizadas", 
+        "Estaciones analizadas", 
         total_estaciones,
-        "distribucion temporal"
+        "Distribución temporal"
     )
 
 with col3:
     df_especies = utils.obtener_especies_conservacion()
     total_especies = len(df_especies) if not df_especies.empty else 0
     st.metric(
-        "especies identificadas", 
+        "Especies identificadas", 
         total_especies,
-        "en ataques"
+        "En ataques"
     )
 
 

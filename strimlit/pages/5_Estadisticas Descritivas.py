@@ -3,11 +3,11 @@ import utils
 import pandas as pd
 
 st.set_page_config(
-    page_title="Analisis de Datos",
+    page_title="Análisis de Datos",
     layout="wide"
 )
 
-st.title("Analisis Descriptivo de Datos")
+st.title("Análisis Descriptivo de Datos")
 st.markdown("---")
 
 # Cargar datos 
@@ -29,12 +29,14 @@ if not tabla_fatalidad.empty:
     st.markdown("""
     <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
     
-    ## Interpretación 
+ Se puede observar que de un total de 5001 ataques registrados, 3902 ataques son ataques no fatales, representando un 78% del total. Mientras que solo 1099 ataques son registrados como fatales, siendo un 22% del total.
     
+
+                         
     </div>
     """, unsafe_allow_html=True)
     
-    st.subheader("estadisticas descriptivas")
+    st.subheader("Estadísticas descriptivas")
     
     col1, col2 = st.columns(2)
     with col1:
@@ -56,20 +58,25 @@ if not tabla_actividades.empty:
     st.markdown("""
     <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
     
-    ## Interpretación 
+ Las actividades más realizadas antes de sufrir un ataque de tiburón son: surfear, con 1069 incidentes; bodyboarding, con 976 incidentes y pescar, con 864 incidentes.
+
+ Por otra parte, las actividades menos comunes al sufrir un ataque de tiburón son: flotar en el agua, con 14 incidentes; remar, con 13 incidentes y el suceso que menos ocurre durante ataques de tiburones es caerse de la borda de una embarcación, con solo 4 ataques registrados.
+
+ Podemos decir que la mayoría de ataques se producen al realizar actividades que requieran estar mucho tiempo en el agua y que hacen que el tiburón confunde a la persona con una presa. En el caso de la pesca se puede deber a la atracción del tiburón buscando alguna presa.
+
     
     </div>
     """, unsafe_allow_html=True)
     
-    st.subheader("Estadisticas Descriptivas")
-    st.write("5 actividades mas atacadas:")
+    st.subheader("Estadísticas Descriptivas")
+    st.write("5 actividades más atacadas:")
     
     for i, (_, row) in enumerate(tabla_actividades.head(5).iterrows(), 1):
         st.write(f"{i}. {row['Categoria']}: {row['Frecuencia Absoluta']} incidentes ({row['Frecuencia Relativa %']}%)")
 
 st.markdown("---")
 
-st.header("Tabla de Paises")
+st.header("Tabla de Países")
 
 tabla_paises = utils.analizar_frecuencias(df, 'country', excluir_desconocido=True)
 
@@ -79,20 +86,23 @@ if not tabla_paises.empty:
     st.markdown("""
     <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
     
-    ## Interpretación 
+ Los 3 países con más ataques registrados son con diferencia Estados Unidos, Australia y Sudáfrica. Esto se debe a diversos factores como: alta densidad de población en locaciones costeras;  la gran costa marítima que poseen, ideales para todo tipo de actividades acuáticas; y por último, las especies de tiburones con más ataques habitan en estos países.
+
+ En cambio, los países con menos ataques registrados suelen tener climas no favorables para la mayoría de especies de tiburones causantes de ataques, además de tener un bajo número de población tanto en el territorio total como en las costas. La mayoría de países que se encuentran en esta situación poseen climas fríos como Islandia o las islas Británicas, no poseen grandes líneas costeras como Líbano o países de la península de los Balcanes, o simplemente son países que no poseen gran actividad en los océanos.
+
     
     </div>
     """, unsafe_allow_html=True)
 
-    st.subheader("Estadisticas Descriptivas")
-    st.write("Top 5 Paises Mas Atacados:")
+    st.subheader("Estadísticas Descriptivas")
+    st.write("Top 5 Países Más Atacados:")
     
     for i, (_, row) in enumerate(tabla_paises.head(5).iterrows(), 1):
         st.write(f"{i}. {row['Categoria']}: {row['Frecuencia Absoluta']} incidentes ({row['Frecuencia Relativa %']}%)")
 
 st.markdown("---")
 
-st.header("Tablas de Victimas")
+st.header("Tablas de Víctimas")
 
 df_edad_grupos = df.copy()
 bins = [0, 18, 30, 45, 60, 100]
@@ -124,7 +134,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.subheader("Estadisticas Descriptivas de la Edad")
+st.subheader("Estadísticas Descriptivas de la Edad")
 
 if not estadisticas['estadisticas_edad'].empty:
     st.dataframe(estadisticas['estadisticas_edad'], use_container_width=True)
@@ -146,8 +156,8 @@ if not tabla_estaciones.empty:
     </div>
     """, unsafe_allow_html=True)
     
-    st.subheader("Estadisticas Descriptivas")
-    st.write("Top Estaciones con Mas Ataques:")
+    st.subheader("Estadísticas Descriptivas")
+    st.write("Top Estaciones con Más Ataques:")
     
     for i, (_, row) in enumerate(tabla_estaciones.iterrows(), 1):
         st.write(f"{i}. {row['Categoria']}: {row['Frecuencia Absoluta']} incidentes ({row['Frecuencia Relativa %']}%)")
@@ -181,7 +191,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.subheader("Estadisticas Descriptivas")
+st.subheader("Estadísticas Descriptivas")
 
 if not estadisticas['tasas_actividad'].empty:
     col1, col2 = st.columns(2)
