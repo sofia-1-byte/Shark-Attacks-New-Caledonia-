@@ -3,36 +3,37 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 import utils
-import utils
-
-#Título
-st.write("""Graficos""")
-
 #Varibles del fronend
-column = ["Tipo de Actividad", "Fatalidad", "Temporada", "Sexo", "Especie de Tiburón", "AM,PM"]
-
+column = ["Año","Tipo de Actividad", "Fatalidad", "Temporada", "Sexo", "Especie de Tiburón", "AM,PM"]
 df = utils.load_and_clean_data()
 
-#Select box para el tipo de variable
-columna = st.selectbox("Ingrese una Varible Para su Gráfico",
-   column)
+#Título
+st.set_page_config(
+    page_title="Gráficos",
+    page_icon="",
+    layout="wide")
 
-#Cambiar el formato del string columna para que sea legible por la funcion de graficos de pie
-if columna == "Tipo de Actividad":
-    columna = "activity"
-elif columna == "Fatalidad":
-    columna = "is_fatal_cat"
-elif columna == "Temporada":
-    columna = "season"
-elif columna == "Sexo":
-    columna = "sex"
-elif columna == "Especie de Tiburón":
-    columna = "species"
-elif columna == "AM,PM":
-    columna = "day_part"
+#Título
+st.markdown('<h1 style="color:#4991f5;text-align:center;">Gráficos</h1>', unsafe_allow_html=True)
+st.markdown("---")
 
+#Botones para pedir al usuario que gráfico quiere ver
+kind_graph = st.selectbox("Ingrese el tipo de gráfico que quiere ver", ["Histogramas", "Pie"])
 
-st.write(df)
-st.write(utils.grafico_pie(columna, True))
+if kind_graph == "Pie":
+    #Select box para el tipo de variable
+    columna = st.selectbox("Ingrese una Varible Para su Gráfico",
+    column)
+#Formateamos la entrada de la selectbox
+    col = utils.formato(columna)
+
+    st.write(df)
+    st.write(utils.grafico_pie(col, True))
+elif kind_graph == "Histogramas":
+
+    columna = st.selectbox("Ingrese una Varible Para su Gráfico", column)
+
+    col = utils.formato(columna)
+    st.write(utils.grafico_barras(col, True))
 
 

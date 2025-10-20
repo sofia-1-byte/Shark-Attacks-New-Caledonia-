@@ -6,6 +6,7 @@ from typing import Optional, Dict, Any
 import os
 from scipy import stats
 from PIL import Image
+import plotly.express as px
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(current_dir, "..", "bbdd", "shark_attacks.db")
@@ -57,6 +58,7 @@ def load_and_clean_data() -> pd.DataFrame:
             
         query = f"""
         SELECT 
+            a.year,
             a.is_fatal, 
             a.activity, 
             a.moon_phase, 
@@ -444,3 +446,70 @@ def grafico_pie(columna: str, excluir: bool = False) :
                   title=title)
     return pie_grafico
 
+#Cambiar el formato del string columna para que sea legible por la funcion de graficos de pie
+def formato(columna):
+    """Formatea la entrada del back end de las
+    variables de la selección en variables que la funcion de gráfico
+    de pie pueda leer"""
+
+    if columna == "Tipo de Actividad":
+        columna = "activity"
+        return columna
+    elif columna == "Fatalidad":
+        columna = "is_fatal_cat"
+        return columna
+    elif columna == "Temporada":
+        columna = "season"
+        return columna
+    elif columna == "Sexo":
+        columna = "sex"
+        return columna
+    elif columna == "Especie de Tiburón":
+        columna = "species"
+        return columna
+    elif columna == "AM,PM":
+        columna = "day_part"
+        return columna
+    elif columna == "Década":
+        columna = "decada"
+        return columna
+    elif columna == "Año":
+        columna = "year"
+        return columna
+    else:
+        pass
+
+###Gráfico de barras
+def grafico_barras(columna: str, excluir: bool = False):
+    """ Genera un gráfico de barras según las proporciones de las columnas elegidas
+    Parameters:
+        columna (str): columna de tablas
+        excluir (bool, optional): decidir si se excluyen valores desconocidos
+
+    """
+
+    ##Cargar base de datos
+    df = load_and_clean_data()
+    ##Analizar frecuencias de los fatales
+
+    frecuencia = analizar_frecuencias(df, columna, excluir)
+
+    ##Condicionar titulos para el gráfico de pie según las variables
+    if columna == "activity":
+        title = "Proporcion de ataques según actividad"
+    elif columna == "is_fatal_cat":
+        title = "Proporción de ataques según fatalidad"
+    elif columna == "year":
+        title = "Cantidad de ataques según el año"
+    elif columna == "season":
+        title = "Proporción de ataques según Temporada"
+    elif columna == "sex":
+        title = "Proporción de ataques según sexo de las víctimas"
+    elif columna == "species":
+        title = "Proporción de ataques según la Especie de Tiburón"
+    elif columna == "day_part":
+        title = "Proporción de ataques según el horario"
+
+    ## Construcción del gráfico
+    fig = px.bar(frecuencia, x='Categoria', y='Frecuencia Absoluta', title= title)
+    return fig
