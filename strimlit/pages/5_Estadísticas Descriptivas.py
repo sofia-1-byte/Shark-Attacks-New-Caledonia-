@@ -155,13 +155,17 @@ if not tabla_estaciones.empty:
     st.markdown("""
     <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
     
-    ## Interpretación
+ La estación del año con más ataques de tiburón registrados es el invierno, con 1466 incidentes registrados (29,31%). Esto puede deberse a que durante esa época la noche suele ser más duradera, cuando los tiburones son mucho más activos, además que en ciertos lugares del hemisferio sur, como lo es Australia, su verano ocurre de diciembre a marzo, donde en otros lugares sería invierno, haciendo que mucha más población se encuentre en las playas, aumentando la posibilidad de algún ataque.
+
+ Después del invierno, las estaciones con más ataques registrados son otoño y verano, siendo primavera la estación con menos ataques registrados.
+
+
     
     </div>
     """, unsafe_allow_html=True)
     
     st.subheader("Estadísticas Descriptivas")
-    st.write("Top Estaciones con Más Ataques:")
+    st.write("Top Estaciones Con Más Ataques:")
     
     for i, (_, row) in enumerate(tabla_estaciones.iterrows(), 1):
         st.write(f"{i}. {row['Categoria']}: {row['Frecuencia Absoluta']} incidentes ({row['Frecuencia Relativa %']}%)")
@@ -190,7 +194,10 @@ if tablas_actividad:
 st.markdown("""
 <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
 
-## Interpretación 
+ Se puede apreciar que la actividad con mayor tasa de mortalidad con bastante diferencia es caerse de la borda de una embarcación, con una tasa de mortalidad del 75%. Seguido de este, las otras dos actividades más fatales son: bañarse (42,42% de mortalidad) y nadar (37,5%).
+
+ Por su parte, las actividades menos fatales son boogie boarding (4,76% de mortalidad), remar y surfskiing, con un 0% de mortalidad.
+
 
 </div>
 """, unsafe_allow_html=True)
