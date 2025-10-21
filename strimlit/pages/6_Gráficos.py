@@ -32,8 +32,11 @@ if kind_graph == "Pie":
 elif kind_graph == "Histogramas":
 
     columna = st.selectbox("Ingrese una Varible Para su Gráfico", column)
-
+    columna2 = st.selectbox("Ingrese una variable para su grafico", column)
     col = utils.formato(columna)
+    col2 = utils.formato(columna2)
     st.write(utils.grafico_barras(col, True))
+
+st.write(utils.tabla_bivariante(df = df,species = col,is_fatal_cat= col2))
 
 
