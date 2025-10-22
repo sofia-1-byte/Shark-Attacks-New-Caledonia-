@@ -149,6 +149,11 @@ def crear_tablas_doble_entrada(_df: pd.DataFrame, fila: str, columna: str) -> Di
         columna: str - nombre de la variable para las columnas
     returns:
         dict: diccionario con diferentes tipos de tablas de contingencia
+            absoluta': tabla_absoluta,
+        'rel_total':
+        'rel_fila':
+        'rel_columna':
+        'absoluta':
     """
     if fila not in _df.columns or columna not in _df.columns:
         return {}
@@ -518,11 +523,13 @@ def grafico_barras(columna: str, excluir: bool = False):
     return fig
 
 ###Tabla bivariante
-def tabla_bivariante(df: pd.DataFrame, species: str, is_fatal_cat: str):
-    """Genera una tabla bivariante a traves de dos entradas:
-    parametros:
-    species (str): variable 1
-    is_fatal_cat (str): variable 2"""
+def tabla_bivariante(_df: pd.DataFrame, species: str, is_fatal_cat: str, unk: bool):
+
+    if unk:
+        df = _df[(_df[species] != "Desconocido") & (_df[is_fatal_cat] != "Desconocido")].copy()
+    else:
+        df = _df
+
     a = df[species].value_counts()
     list = a.index
     # lista de la segunda varible
@@ -534,127 +541,58 @@ def tabla_bivariante(df: pd.DataFrame, species: str, is_fatal_cat: str):
     # lista de dataframe
     df_list = []
     df.columns
-    for y in list2:
-        for x in list:
-            if y == list2[0]:
-                # Esecíficamos que al primer intento de la iteración se añaden las listas
-                if x == list[0]:
+    # Revisa cada fila
+    for x in list:
+        # Revisa una columna por cada fila
+        for y in list2:
+            # filtramos
+            b = df.loc[(df[species] == x) & (df[is_fatal_cat] == y), species].value_counts()
+            # revisamos si es el inicio del programa (primera celda)
+            if y == list2[0] and x == list[0]:
 
-                    # Función que filtra
-                    b = df.loc[(df[species] == x) & (df[is_fatal_cat] == y), species].value_counts()
-                    # Establecemos que si no existe ningun resultado se escriba 0 para los resultados
-                    if not b.empty:
-                        b1 = b.index
-                        b2 = b.values
-                        b.name = y
-
-                        data = pd.DataFrame({
-                            "Categoria": [b1[0]],
-                            b.name: b2[0]
-                        }, index=[b1[0]])
-
-                    else:
-
-                        b1 = b.index
-                        b2 = b.values
-                        b.name = y
-                        data = pd.DataFrame({
-                            "Categoria": [x],
-                            b.name: [0],
-                        }, index=[x])
-
+                if not b.empty:
+                    b1 = b.index
+                    b2 = b.values
+                    data = pd.DataFrame({
+                        species: [b1[0]]})
+                    data2 = pd.DataFrame({
+                        is_fatal_cat: [y]})
+                    data3 = pd.DataFrame({
+                        "count": [b2[0]]})
+                    data = pd.concat([data, data2, data3], axis=1)
 
                 else:
-                    # Función que filtra
-                    b = df.loc[(df[species] == x) & (df[is_fatal_cat] == y), species].value_counts()
+                    data = pd.DataFrame({
+                        species: [x]})
+                    data2 = pd.DataFrame({
+                        is_fatal_cat: [y]})
+                    data3 = pd.DataFrame({
+                        "count": [0]})
+                    data = pd.concat([data, data2, data3], axis=1)
 
-                    if not b.empty:
-                        b1 = b.index
-                        b2 = b.values
-                        b.name = y
-                        data1 = pd.DataFrame({
-                            "Categoria": [b1[0]],
-                            b.name: b2[0]
-                        }, index=[b1[0]])
-                        data = pd.concat([data, data1], axis=0)
-                    else:
 
-                        b1 = b.index
-                        b2 = b.values
-                        b.name = y
-                        data1 = pd.DataFrame({
-                            "Categoria": [x],
-                            b.name: [0],
-                        }, index=[x])
-                        data = pd.concat([data, data1], axis=0)
             else:
-                # Función que filtra
-                b = df.loc[(df[species] == x) & (df[is_fatal_cat] == y), species].value_counts()
+                if not b.empty:
+                    b1 = b.index
+                    b2 = b.values
+                    data1 = pd.DataFrame({
+                        species: [b1[0]]})
+                    data2 = pd.DataFrame({
+                        is_fatal_cat: [y]})
+                    data3 = pd.DataFrame({
+                        "count": [b2[0]]})
+                    data4 = pd.concat([data1, data2, data3], axis=1)
 
-                if x == list[0]:
-
-                    if not b.empty:
-                        b1 = b.index
-                        b2 = b.values
-                        b.name = y
-                        data2 = pd.DataFrame({
-                            b.name: [b2[0]]
-                        }, index=[b1[0]])
-
-
-                    else:
-
-                        b1 = b.index
-                        b2 = b.values
-                        b.name = y
-                        data2 = pd.DataFrame({
-
-                            b.name: [0],
-                        }, index=[x])
-
-                elif x in list[1:len(list) - 1]:
-
-                    if not b.empty:
-                        b1 = b.index
-                        b2 = b.values
-                        b.name = y
-                        data1 = pd.DataFrame({
-
-                            b.name: [b2[0]]
-                        }, index=[b1[0]])
-                        data2 = pd.concat([data2, data1], axis=0)
-                    else:
-
-                        b1 = b.index
-                        b2 = b.values
-                        b.name = y
-                        data1 = pd.DataFrame({
-
-                            b.name: [0],
-                        }, index=[x])
-                        data2 = pd.concat([data2, data1], axis=0)
+                    data = pd.concat([data4, data], axis=0)
                 else:
+                    data1 = pd.DataFrame({
+                        species: [x]})
+                    data2 = pd.DataFrame({
+                        is_fatal_cat: [y]})
+                    data3 = pd.DataFrame({
+                        "count": [0]})
+                    data4 = pd.concat([data1, data2, data3], axis=1)
 
-                    if not b.empty:
-                        b1 = b.index
-                        b2 = b.values
-                        b.name = y
-                        data1 = pd.DataFrame({
+                    data = pd.concat([data4, data], axis=0)
 
-                            b.name: [b2[0]]
-                        }, index=[b1[0]])
-                        data2 = pd.concat([data2, data1], axis=0)
-
-                        data = pd.concat([data, data2], axis=1)
-                    else:
-
-                        b1 = b.index
-                        b2 = b.values
-                        b.name = y
-                        data1 = pd.DataFrame({
-
-                            b.name: [0],
-                        }, index=[x])
-                        data2 = pd.concat([data2, data1], axis=0)
-                        data = pd.concat([data, data2], axis=1)
     return data
