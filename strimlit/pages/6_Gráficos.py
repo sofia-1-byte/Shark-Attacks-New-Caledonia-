@@ -72,10 +72,11 @@ if kind_graph == "Histogramas":
         le, ri = right.columns(2)
         key = ri.button("Vertical ")
         key2 = le.button("Contingencia")
-        if key2:
-            right.write(tabla["absoluta"])
-        else:
+        if key:
             right.write(tabla2)
+        else:
+
+            right.write(tabla["absoluta"])
     else:
         left, right = st.columns(2)
         columna = left.selectbox("Ingrese una Varible Para su Gráfico", column)
