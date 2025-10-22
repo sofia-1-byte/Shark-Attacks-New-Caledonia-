@@ -502,37 +502,62 @@ def grafico_barras(columna: str, columna2: Optional[str] = None, excluir: bool =
         bi: gráfico de barras bivariante
 
     """
-
     ##Cargar base de datos
     df = load_and_clean_data()
-    ##Analizar frecuencias de los fatales
 
-    frecuencia = tabla_bivariante(df ,  columna, columna2,  excluir)
-    frecuencia2 = analizar_frecuencias( df, columna, excluir)
+    if columna2 != None:
 
-    ##Condicionar titulos para el gráfico de pie según las variables
-    if columna == "activity":
-        title = "Proporcion de ataques según actividad"
-    elif columna == "is_fatal_cat":
-        title = "Proporción de ataques según fatalidad"
-    elif columna == "year":
-        title = "Cantidad de ataques según el año"
-    elif columna == "season":
-        title = "Proporción de ataques según Temporada"
-    elif columna == "sex":
-        title = "Proporción de ataques según sexo de las víctimas"
-    elif columna == "species":
-        title = "Proporción de ataques según la Especie de Tiburón"
-    elif columna == "day_part":
-        title = "Proporción de ataques según el horario"
 
-    ## Construcción del gráfico
-    if columna2 == None :
-        fig = px.bar(frecuencia2, x=columna, y='count', title=title)
-        return fig
+        ##Analizar frecuencias de los fatales
 
+        frecuencia = tabla_bivariante(df, columna, columna2, excluir)
+        frecuencia2 = analizar_frecuencias(df, columna, excluir)
+
+        ##Condicionar titulos para el gráfico de pie según las variables
+        if columna == "activity":
+            title = "Proporcion de ataques según actividad"
+        elif columna == "is_fatal_cat":
+            title = "Proporción de ataques según fatalidad"
+        elif columna == "year":
+            title = "Cantidad de ataques según el año"
+        elif columna == "season":
+            title = "Proporción de ataques según Temporada"
+        elif columna == "sex":
+            title = "Proporción de ataques según sexo de las víctimas"
+        elif columna == "species":
+            title = "Proporción de ataques según la Especie de Tiburón"
+        elif columna == "day_part":
+            title = "Proporción de ataques según el horario"
+
+        ## Construcción del gráfico
+        if columna2 == None:
+            fig = px.bar(frecuencia2, x=columna, y='count', title=title)
+            return fig
+
+        else:
+            fig = px.bar(frecuencia, x=columna, y='count', color=columna2, title=title)
+            return fig
     else:
-        fig = px.bar(frecuencia, x=columna, y='count', color=columna2, title=title)
+        frecuencia = analizar_frecuencias(df, columna, excluir)
+
+        ##Condicionar titulos para el gráfico de pie según las variables
+        if columna == "activity":
+            title = "Proporcion de ataques según actividad"
+        elif columna == "is_fatal_cat":
+            title = "Proporción de ataques según fatalidad"
+        elif columna == "year":
+            title = "Cantidad de ataques según el año"
+        elif columna == "season":
+            title = "Proporción de ataques según Temporada"
+        elif columna == "sex":
+            title = "Proporción de ataques según sexo de las víctimas"
+        elif columna == "species":
+            title = "Proporción de ataques según la Especie de Tiburón"
+        elif columna == "day_part":
+            title = "Proporción de ataques según el horario"
+
+        ## Construcción del gráfico
+        fig = px.bar(frecuencia, x='Categoria', y='Frecuencia Absoluta', title=title)
         return fig
 
 

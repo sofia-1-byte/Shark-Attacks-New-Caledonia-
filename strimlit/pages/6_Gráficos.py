@@ -53,47 +53,77 @@ if kind_graph == "Pie":
 
 if kind_graph == "Histogramas":
     check = st.checkbox("Visibilidad de datos")
+    check2 = st.checkbox("Bivariante")
+    if check2:
+        if check:
 
-    if check:
+            # Creamos los espacios visuales
+            left, right = st.columns(2)
+            columna = left.selectbox("Ingrese una Varible Para su Gráfico", column)
 
-        #Creamos los espacios visuales
-        left, right = st.columns(2)
-        columna = left.selectbox("Ingrese una Varible Para su Gráfico", column)
+            column1 = [x for x in column if x != columna]
 
-        column1= [x for x in column if x != columna ]
+            columna2 = right.selectbox("Ingrese una variable para su grafico", column1)
+            col = utils.formato(columna)
+            col2 = utils.formato(columna2)
+            right.header("Tablas")
+            left.header("Visual")
+            left.write(utils.grafico_barras(col, col2, True))
+            ##Creación de variables para los graficos
+            tabla = utils.crear_tablas_doble_entrada(_df=df, fila=col, columna=col2)
+            tabla2 = utils.tabla_bivariante(df, col, col2, unk=True)
+            ##
 
+            le, ri = right.columns(2)
+            key = ri.button("Vertical ")
+            key2 = le.button("Contingencia")
+            if key:
+                right.write(tabla2)
+            else:
 
-
-        columna2 = right.selectbox("Ingrese una variable para su grafico", column1 )
-        col = utils.formato(columna)
-        col2 = utils.formato(columna2)
-        right.header("Tablas")
-        left.header("Visual")
-        left.write(utils.grafico_barras(col, col2, True))
-        ##Creación de variables para los graficos
-        tabla = utils.crear_tablas_doble_entrada(_df= df, fila=col, columna=col2)
-        tabla2 = utils.tabla_bivariante(df,col, col2, unk = True)
-        ##
-
-        le, ri = right.columns(2)
-        key = ri.button("Vertical ")
-        key2 = le.button("Contingencia")
-        if key:
-            right.write(tabla2)
+                right.write(tabla["absoluta"])
         else:
+            left, right = st.columns(2)
+            columna = left.selectbox("Ingrese una Varible Para su Gráfico", column)
 
-            right.write(tabla["absoluta"])
+            column1 = [x for x in column if x != columna]
+
+            columna2 = right.selectbox("Ingrese una variable para su grafico", column1)
+            col = utils.formato(columna)
+            col2 = utils.formato(columna2)
+            st.header("Visual")
+            st.write(utils.grafico_barras(col, col2, True))
     else:
-        left, right = st.columns(2)
-        columna = left.selectbox("Ingrese una Varible Para su Gráfico", column)
+        if check:
 
-        column1 = [x for x in column if x != columna]
+            # Creamos los espacios visuales
+            left, right = st.columns(2)
+            columna = left.selectbox("Ingrese una Varible Para su Gráfico", column)
 
-        columna2 = right.selectbox("Ingrese una variable para su grafico", column1)
-        col = utils.formato(columna)
-        col2 = utils.formato(columna2)
-        st.header("Visual")
-        st.write(utils.grafico_barras(col, col2, True))
+
+
+
+            col = utils.formato(columna)
+
+            right.header("Tablas")
+            left.header("Visual")
+            left.write(utils.grafico_barras(col, columna2= None, excluir= True))
+            ##Creación de variables para los graficos
+            tabla = utils.analizar_frecuencias(df, col)
+            right.write(tabla)
+
+        else:
+            left, right = st.columns(2)
+            columna = left.selectbox("Ingrese una Varible Para su Gráfico", column)
+
+
+
+
+            col = utils.formato(columna)
+
+            st.header("Visual")
+            st.write(utils.grafico_barras(col, columna2= None, excluir=True))
+
 
 
 
