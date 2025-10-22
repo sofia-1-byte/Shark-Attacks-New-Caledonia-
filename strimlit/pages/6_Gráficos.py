@@ -47,6 +47,7 @@ if kind_graph == "Pie":
     else:
         columna = st.selectbox("Ingrese una Varible Para su Gráfico",
                                   column2)
+        st.header("Visual")
         col = utils.formato(columna)
         st.write(utils.grafico_pie(col, True))
 
@@ -58,7 +59,12 @@ if kind_graph == "Histogramas":
         #Creamos los espacios visuales
         left, right = st.columns(2)
         columna = left.selectbox("Ingrese una Varible Para su Gráfico", column)
-        columna2 = right.selectbox("Ingrese una variable para su grafico", column)
+
+        column1= [x for x in column if x != columna ]
+
+
+
+        columna2 = right.selectbox("Ingrese una variable para su grafico", column1 )
         col = utils.formato(columna)
         col2 = utils.formato(columna2)
         right.header("Tablas")
@@ -80,7 +86,10 @@ if kind_graph == "Histogramas":
     else:
         left, right = st.columns(2)
         columna = left.selectbox("Ingrese una Varible Para su Gráfico", column)
-        columna2 = right.selectbox("Ingrese una variable para su grafico", column)
+
+        column1 = [x for x in column if x != columna]
+
+        columna2 = right.selectbox("Ingrese una variable para su grafico", column1)
         col = utils.formato(columna)
         col2 = utils.formato(columna2)
         st.header("Visual")
