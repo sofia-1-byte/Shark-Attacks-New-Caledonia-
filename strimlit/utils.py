@@ -121,6 +121,12 @@ def analizar_frecuencias(_df: pd.DataFrame, columna: str, excluir_desconocido: b
         excluir_desconocido: bool - si es verdadero excluye valores desconocidos
     returns:
         dataframe: tabla con frecuencias absolutas y relativas
+    DICCIONARIO:
+        'Categoria': frecuencias.index,
+        'Frecuencia Absoluta': frecuencias.values,
+        'Frecuencia Relativa': (frecuencias.values / total).round(4),
+        'Frecuencia Relativa %': (frecuencias.values / total * 100).round(2)
+
     """
     if columna not in _df.columns:
         return pd.DataFrame()
@@ -148,8 +154,8 @@ def crear_tablas_doble_entrada(_df: pd.DataFrame, fila: str, columna: str) -> Di
         fila: str - nombre de la variable para las filas
         columna: str - nombre de la variable para las columnas
     returns:
-        dict: diccionario con diferentes tipos de tablas de contingencia
-            absoluta': tabla_absoluta,
+    DICCIONARIO
+        'absoluta':
         'rel_total':
         'rel_fila':
         'rel_columna':
@@ -488,11 +494,12 @@ def formato(columna):
         pass
 
 ###Gráfico de barras
-def grafico_barras(columna: str, excluir: bool = False):
+def grafico_barras(columna: str, columna2: Optional[str] = None, excluir: bool = False):
     """ Genera un gráfico de barras según las proporciones de las columnas elegidas
     Parameters:
         columna (str): columna de tablas
         excluir (bool, optional): decidir si se excluyen valores desconocidos
+        bi: gráfico de barras bivariante
 
     """
 
@@ -500,7 +507,8 @@ def grafico_barras(columna: str, excluir: bool = False):
     df = load_and_clean_data()
     ##Analizar frecuencias de los fatales
 
-    frecuencia = analizar_frecuencias(df, columna, excluir)
+    frecuencia = tabla_bivariante(df ,  columna, columna2,  excluir)
+    frecuencia2 = analizar_frecuencias( df, columna, excluir)
 
     ##Condicionar titulos para el gráfico de pie según las variables
     if columna == "activity":
@@ -519,11 +527,24 @@ def grafico_barras(columna: str, excluir: bool = False):
         title = "Proporción de ataques según el horario"
 
     ## Construcción del gráfico
-    fig = px.bar(frecuencia, x='Categoria', y='Frecuencia Absoluta', title= title)
-    return fig
+    if columna2 == None :
+        fig = px.bar(frecuencia2, x=columna, y='count', title=title)
+        return fig
 
-###Tabla bivariante
+    else:
+        fig = px.bar(frecuencia, x=columna, y='count', color=columna2, title=title)
+        return fig
+
+
+###Tabla bivariante vertical
 def tabla_bivariante(_df: pd.DataFrame, species: str, is_fatal_cat: str, unk: bool):
+    """Crea una tabla bivariante vertical que permite hacer gráficos de barras agrupados
+    Parámetros:
+    _df: dataframe
+    species: variable 1
+    is_fatal_cat: variable 2
+    unk: True = Descartar valores "Desconocidos"
+    """
 
     if unk:
         df = _df[(_df[species] != "Desconocido") & (_df[is_fatal_cat] != "Desconocido")].copy()
