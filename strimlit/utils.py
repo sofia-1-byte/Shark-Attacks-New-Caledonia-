@@ -6,7 +6,6 @@ from typing import Optional, Dict, Any
 import os
 from scipy import stats
 from PIL import Image
-import plotly.express as px
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(current_dir, "..", "bbdd", "shark_attacks.db")
@@ -58,7 +57,6 @@ def load_and_clean_data() -> pd.DataFrame:
             
         query = f"""
         SELECT 
-            a.year,
             a.is_fatal, 
             a.activity, 
             a.moon_phase, 
@@ -145,27 +143,32 @@ def crear_tablas_doble_entrada(_df: pd.DataFrame, fila: str, columna: str) -> Di
     if df_filtrado.empty:
         return {}
 
+    # Tabla absoluta basica
     tabla_absoluta = pd.crosstab(df_filtrado[fila], df_filtrado[columna], margins=True, margins_name="Total")
     total_general = tabla_absoluta.loc['Total', 'Total']
 
+    # Distribuciones porcentuales
     tabla_porcentaje_total = (tabla_absoluta / total_general * 100).round(2)
 
+    # Distribuciones condicionales por filas (cada fila suma 100%)
     tabla_condicional_filas = tabla_absoluta.copy().drop('Total', axis=1).drop('Total', axis=0)
     tabla_condicional_filas = tabla_condicional_filas.div(tabla_condicional_filas.sum(axis=1), axis=0) * 100
     tabla_condicional_filas = tabla_condicional_filas.round(2)
 
+    # Distribuciones condicionales por columnas (cada columna suma 100%)
     tabla_condicional_columnas = tabla_absoluta.copy().drop('Total', axis=1).drop('Total', axis=0)
     tabla_condicional_columnas = tabla_condicional_columnas.div(tabla_condicional_columnas.sum(axis=0), axis=1) * 100
     tabla_condicional_columnas = tabla_condicional_columnas.round(2)
 
+    # Agregar totales a las tablas condicionales
     tabla_condicional_filas['Total'] = 100.0
     tabla_condicional_columnas.loc['Total'] = 100.0
 
     return {
         'absoluta': tabla_absoluta,
         'porcentaje_total': tabla_porcentaje_total,
-        'condicional_filas': tabla_condicional_filas,  # P(columna|fila) - cada fila suma 100%
-        'condicional_columnas': tabla_condicional_columnas,  # P(fila|columna) - cada columna suma 100%
+        'condicional_filas': tabla_condicional_filas,
+        'condicional_columnas': tabla_condicional_columnas,
         'explicacion': {
             'absoluta': "Frecuencias absolutas de casos",
             'porcentaje_total': "Porcentaje sobre el total general (base: 100% = total de casos)",
@@ -418,107 +421,3 @@ def mostrar_consulta(funcion_consulta, titulo, descripcion, codigo_sql):
         st.warning("no se encontraron datos para esta consulta")
     
     st.markdown("---")
-
-def grafico_pie(columna: str, excluir: bool = False) :
-    """ Genera un gráfico de pie según las proporciones de las columnas de la
-    Parameters:
-        columna (str): columna de tablas
-        excluir (bool, optional): decidir si se excluyen valores desconocidos
-
-    """
-
-    ##Cargar el dataframe.
-
-    df = load_and_clean_data()
-
-    ##Analizar frecuencias de los fatales
-    df_grafico = analizar_frecuencias(df, columna, excluir)
-    #print(df_fatals.head())
-
-    ##Condicionar titulos para el gráfico de pie según las variables
-    if columna == "activity":
-        title = "Proporcion de ataques según actividad"
-    elif columna == "is_fatal_cat":
-        title = "Proporción de ataques según fatalidad"
-    elif columna == "season":
-        title = "Proporción de ataques según Temporada"
-    elif columna == "sex":
-        title = "Proporción de ataques según sexo de las víctimas"
-    elif columna == "species":
-        title = "Proporción de ataques según la Especie de Tiburón"
-    elif columna == "day_part":
-        title = "Proporción de ataques según el horario"
-
-
-    ## Construcción del gráfico
-    pie_grafico = px.pie(df_grafico, values='Frecuencia Absoluta', names='Categoria',
-                  title=title)
-    return pie_grafico
-
-#Cambiar el formato del string columna para que sea legible por la funcion de graficos de pie
-def formato(columna):
-    """Formatea la entrada del back end de las
-    variables de la selección en variables que la funcion de gráfico
-    de pie pueda leer"""
-
-    if columna == "Tipo de Actividad":
-        columna = "activity"
-        return columna
-    elif columna == "Fatalidad":
-        columna = "is_fatal_cat"
-        return columna
-    elif columna == "Temporada":
-        columna = "season"
-        return columna
-    elif columna == "Sexo":
-        columna = "sex"
-        return columna
-    elif columna == "Especie de Tiburón":
-        columna = "species"
-        return columna
-    elif columna == "AM,PM":
-        columna = "day_part"
-        return columna
-    elif columna == "Década":
-        columna = "decada"
-        return columna
-    elif columna == "Año":
-        columna = "year"
-        return columna
-    else:
-        pass
-
-###Gráfico de barras
-def grafico_barras(columna: str, excluir: bool = False):
-    """ Genera un gráfico de barras según las proporciones de las columnas elegidas
-    Parameters:
-        columna (str): columna de tablas
-        excluir (bool, optional): decidir si se excluyen valores desconocidos
-
-    """
-
-    ##Cargar base de datos
-    df = load_and_clean_data()
-    ##Analizar frecuencias de los fatales
-
-    frecuencia = analizar_frecuencias(df, columna, excluir)
-
-    ##Condicionar titulos para el gráfico de pie según las variables
-    if columna == "activity":
-        title = "Proporcion de ataques según actividad"
-    elif columna == "is_fatal_cat":
-        title = "Proporción de ataques según fatalidad"
-    elif columna == "year":
-        title = "Cantidad de ataques según el año"
-    elif columna == "season":
-        title = "Proporción de ataques según Temporada"
-    elif columna == "sex":
-        title = "Proporción de ataques según sexo de las víctimas"
-    elif columna == "species":
-        title = "Proporción de ataques según la Especie de Tiburón"
-    elif columna == "day_part":
-        title = "Proporción de ataques según el horario"
-
-    ## Construcción del gráfico
-    fig = px.bar(frecuencia, x='Categoria', y='Frecuencia Absoluta', title= title)
-    return fig
