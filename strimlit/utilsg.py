@@ -148,6 +148,8 @@ def grafico_pie(columna: str, excluir: bool = False) :
         title = "Proporción de ataques según la Especie de Tiburón"
     elif columna == "day_part":
         title = "Proporción de ataques según el horario"
+    elif columna == "country":
+            title ="Proporción de ataques según el País"
 
 
     ## Construcción del gráfico
@@ -236,7 +238,7 @@ def grafico_barras(columna: str, columna2: Optional[str] = None, excluir: bool =
             return fig
 
         else:
-            fig = px.bar(frecuencia, x=columna, y='Porcentaje', color=columna2, title=title)
+            fig = px.bar(frecuencia, x=columna, y='Frecuencia Relativa %', color=columna2, title=title)
             return fig
     else:
         frecuencia = utils.analizar_frecuencias(df, columna, excluir)
@@ -272,11 +274,11 @@ def grafico_caja(_df,columna, excluir: bool= True):
     if excluir:
         df = _df.loc[_df[a] != "Desconocido", ["age", a]]
 
-        fig = px.box(df, x=a, y="age", color = a)
+        fig = px.box(df, x=a, y="age", color = a, points= False)
 
         return fig
     else:
-        fig = px.box(_df, x=a, y="age")
+        fig = px.box(_df, x=a, y="age", points= False)
 
 
 
@@ -324,7 +326,7 @@ def tabla_bivariante(_df: pd.DataFrame, species: str, is_fatal_cat: str, unk: bo
                         is_fatal_cat: [y]})
                     data3 = pd.DataFrame({
                         "count": [b2[0]],
-                        "Porcentaje": [0/len(df)*100]})
+                        'Frecuencia Relativa %': [0/len(df)*100]})
                     data = pd.concat([data, data2, data3], axis=1)
 
                 else:
@@ -334,7 +336,7 @@ def tabla_bivariante(_df: pd.DataFrame, species: str, is_fatal_cat: str, unk: bo
                         is_fatal_cat: [y]})
                     data3 = pd.DataFrame({
                         "count": [0],
-                        "Porcentaje": [0/len(df)*100]})
+                        'Frecuencia Relativa %': [0/len(df)*100]})
                     data = pd.concat([data, data2, data3], axis=1)
 
 
@@ -348,7 +350,7 @@ def tabla_bivariante(_df: pd.DataFrame, species: str, is_fatal_cat: str, unk: bo
                         is_fatal_cat: [y]})
                     data3 = pd.DataFrame({
                         "count": [b2[0]],
-                        "Porcentaje": [b2[0]/len(df)*100]})
+                        'Frecuencia Relativa %': [b2[0]/len(df)*100]})
                     data4 = pd.concat([data1, data2, data3], axis=1)
 
                     data = pd.concat([data4, data], axis=0)
@@ -359,7 +361,7 @@ def tabla_bivariante(_df: pd.DataFrame, species: str, is_fatal_cat: str, unk: bo
                         is_fatal_cat: [y]})
                     data3 = pd.DataFrame({
                         "count": [0],
-                    "Porcentaje": [0/len(df)*100]})
+                    'Frecuencia Relativa %': [0/len(df)*100]})
                     data4 = pd.concat([data1, data2, data3], axis=1)
 
                     data = pd.concat([data4, data], axis=0)
@@ -367,7 +369,7 @@ def tabla_bivariante(_df: pd.DataFrame, species: str, is_fatal_cat: str, unk: bo
     return data
 
 
-def grafico_barras_paises(columna: str, columna2: Optional[str] = None, excluir: bool = False):
+def grafico_barras_paises(columna: str, columna2: str = None, number: int = 10, excluir: bool = False):
     """ Genera un gráfico de barras según las proporciones de las columnas elegidas
     Parameters:
         columna (str): columna de tablas
@@ -385,7 +387,7 @@ def grafico_barras_paises(columna: str, columna2: Optional[str] = None, excluir:
 
         frecuencia = tabla_bivariante(df, columna, columna2, excluir)
         frecuencia2 = utils.analizar_frecuencias(df, columna, excluir)
-        frecuencia2 = frecuencia2.head(10)
+
         ##Condicionar titulos para el gráfico de pie según las variables
         if columna == "activity":
             title = "Proporcion de ataques según actividad"
@@ -410,10 +412,11 @@ def grafico_barras_paises(columna: str, columna2: Optional[str] = None, excluir:
             return fig
 
         else:
-            fig = px.bar(frecuencia, x=columna, y='Porcentaje', color=columna2, title=title)
+            fig = px.bar(frecuencia, x=columna, y='Frecuencia Relativa %', color=columna2, title=title)
             return fig
     else:
         frecuencia = utils.analizar_frecuencias(df, columna, excluir)
+
 
         ##Condicionar titulos para el gráfico de pie según las variables
         if columna == "activity":
@@ -434,7 +437,26 @@ def grafico_barras_paises(columna: str, columna2: Optional[str] = None, excluir:
             title ="Proporción de ataques según el País"
 
         ## Construcción del gráfico
-        fig = px.bar(frecuencia, x='Categoria', y='Frecuencia Relativa %', title=title)
+        fig = px.bar(frecuencia.head(number), x='Categoria', y='Frecuencia Relativa %', title=title)
         return fig
 
+def histograma_años(columna: str, valor: str, number: int = 7):
+    """
+
+    :param columna: columna del valor para agrupar
+    :param valor:  valor para agrupar
+    :param number: cantidad de barras en el gráfico
+
+    """
+    if not columna == None and valor == None:
+        df = load_and_clean_data1()
+        df1 = df[df[columna] == valor].copy
+
+        fig = px.histogram(df1, x="age", nbins=number)
+
+        return fig
+    else:
+        df = load_and_clean_data1()
+        fig = px.histogram(df, x="age", nbins=number)
+        return fig
 
