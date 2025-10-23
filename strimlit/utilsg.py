@@ -254,15 +254,22 @@ def grafico_barras(columna: str, columna2: Optional[str] = None, excluir: bool =
         fig = px.bar(frecuencia, x='Categoria', y='Frecuencia Absoluta', title=title)
         return fig
 
-def grafico_caja(_df,columna):
+def grafico_caja(_df,columna, excluir: bool= True):
     """
     Permite hacer un gráfico de cága según alguna varibale cualquiera
     """
+    a = columna
 
-    a = utils.analizar_frecuencias(_df, columna)
-    fig = px.box(a, x="Frecuencia Absoluta", y="Categoria")
+    if excluir:
+        df = _df.loc[_df[a] != "Desconocido", ["age", a]]
 
-    return fig
+        fig = px.box(df, x=a, y="age", color = a)
+
+        return fig
+    else:
+        fig = px.box(_df, x=a, y="age")
+
+
 
 
 ###Tabla bivariante vertical
