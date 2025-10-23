@@ -5,20 +5,15 @@ import os
 
 st.set_page_config(
     page_title="Consultas SQL - Ataques de tiburón",
-    page_icon="",
+    page_icon="🦈",
     layout="wide"
 )
 
-# Crear las columnas antes de usarlas
+# Crear columnas 
 col1, col2 = st.columns([3, 1])
 
-with col1:
-    st.markdown('<h1 style="color:#4991f5;margin-top:20px;">Consultas SQL - Análisis de ataques de tiburón</h1>', unsafe_allow_html=True)
-
-with col2:
-    # Aquí puedes agregar contenido si lo necesitas
-    pass
-
+# titulo principal
+st.title("Consultas SQL")
 st.markdown("---")
 
 

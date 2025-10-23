@@ -2,13 +2,12 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Marco Teórico - Ataques de Tiburón",
-    page_icon="",
+    page_icon="🦈",
     layout="wide"
 )
 
 # Título principal
-st.markdown('<h1 style="color:#4991f5;text-align:center;">Marco Teórico</h1>', unsafe_allow_html=True)
-
+st.title("Marco Teórico")
 st.markdown("---")
 
 # Sección: Tiburón
@@ -84,9 +83,6 @@ Es un cazador solitario, principalmente nocturno. Se destaca por tener el espect
 
 El tiburón tigre ocupa el segundo lugar, después del tiburón blanco, en cuanto a ataques fatales registrados a humanos, pero estos eventos siguen siendo extremadamente raros.
 
-
-
-
 </div>
 """, unsafe_allow_html=True)
 
@@ -102,7 +98,6 @@ Los tiburones toro son grandes y robustos, siendo las hembras más grandes que l
 
 El tiburón toro no tiene una reputación de devorador de hombres tan exagerada como la de su pariente, el gran tiburón blanco, pero su capacidad para entrar en ríos y aguas poco profundas, donde caza, hacen que este tiburón sea el responsable de la mayoría de los ataques a humanos. A menudo se acerca demasiado a los buzos. Los ataques son muy raros, pero en algunos mares se han puesto algunas redes para indicar hasta donde puede nadar la gente.
 
-
 </div>
 """, unsafe_allow_html=True)
 
@@ -116,7 +111,6 @@ st.markdown("""
     
 Los índices de ataques de tiburón utilizan diferentes criterios para determinar si un ataque fue provocado o no. Desde la perspectiva del tiburón, los ataques a humanos percibidos como una amenaza para él o como un competidor de su fuente de alimento son todos ataques provocados. Los criterios más comunes para determinar los ataques provocados y no provocados se describen a continuación:
 
-
 </div>
 """, unsafe_allow_html=True)
 
@@ -127,7 +121,6 @@ st.markdown("""
 <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
     
 Estos ocurren cuando un humano toca, engancha, atrapa con una red o de alguna otra manera agrede al animal. Los incidentes que ocurren fuera del hábitat natural de un tiburón, como acuarios y centros de investigación, se consideran provocados, al igual que todos los incidentes que involucran tiburones capturados. A veces, los humanos provocan un ataque sin darse cuenta, como cuando un surfista golpea accidentalmente a un tiburón con una tabla de surf.
-
 
 </div>
 """, unsafe_allow_html=True)
@@ -146,7 +139,6 @@ Son iniciados por el tiburón; ocurren en el hábitat natural del tiburón contr
 
 - Ataque de choque y mordida: El tiburón rodea y golpea a la víctima antes de morderla. Se sabe que los grandes blancos hacen esto ocasionalmente, lo que se conoce como "mordida de prueba", en la que intentan identificar la presa. Las mordeduras repetidas, dependiendo de la reacción de la víctima (agitarse o entrar en pánico pueden hacer que el tiburón crea que es una presa), no son infrecuentes y pueden ser graves o mortales. No se cree que los ataques de choque y mordida sean resultado de una confusión de identidad.
 
-
 </div>
 """, unsafe_allow_html=True)
 
@@ -161,7 +153,6 @@ st.markdown("""
 Las especies de tiburones grandes son superdepredadores en su entorno, y, por lo tanto, tienen poco miedo de cualquier criatura con la que se cruzan. Como la mayoría de los cazadores sofisticados, son curiosos cuando encuentran algo inusual en sus territorios. Al carecer de extremidades con dedos sensibles como manos o pies, la única forma en que pueden explorar un objeto u organismo es mordiéndolo. Estas mordeduras se conocen como mordeduras de prueba. Generalmente, las mordeduras de tiburón son exploratorias y el animal se alejará nadando después de una mordida. Por ejemplo, se cree que las mordeduras exploratorias en surfistas son causadas por el tiburón que confunde al surfista y la tabla de surf con la forma de una presa. No obstante, una sola mordedura puede herir gravemente a un humano si el animal involucrado es un depredador poderoso como un gran tiburón blanco o tigre.
 
 Un tiburón normalmente realiza un ataque rápido y luego se retira para esperar a que la víctima muera o se debilite por el shock y la pérdida de sangre, antes de volver a alimentarse. Esto lo protege de lesiones causadas por un objetivo herido y agresivo; también les da tiempo a los humanos para salir del agua y sobrevivir. Los ataques de tiburón también pueden ocurrir por razones territoriales o por dominio sobre otra especie de tiburón.
-
 
 </div>
 """, unsafe_allow_html=True)
@@ -188,8 +179,7 @@ Permanecer en grupos, ya que los individuos solitarios tienen mayor riesgo de se
 
 
 - Evitar salpicaduras en la superficie, ya que produce ruido que atrae a los tiburones.
-
-            
+        
 </div>
 """, unsafe_allow_html=True)
 
@@ -224,10 +214,7 @@ El estatus de conservación de los tiburones es preocupante, ya que más de un t
 3. Tiburón blanco: Clasificado como vulnerable  debido a la pesca no objetivo y la persecución.
 
 4. Tiburón tigre: Los expertos lo consideran casi amenazado, destacando la reducción de su población por la pesca selectiva y accidental. 
-
-
-
-            
+       
 </div>
 """, unsafe_allow_html=True)
 

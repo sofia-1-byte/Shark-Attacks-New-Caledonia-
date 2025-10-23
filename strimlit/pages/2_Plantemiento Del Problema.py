@@ -2,13 +2,12 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Planteamiento del Problema - Ataques de Tiburón",
-    page_icon="",
+    page_icon="🦈",
     layout="wide"
 )
 
-# Título principal centrado
-st.markdown('<h1 style="color:#4991f5;text-align:center;">Planteamiento del Problema</h1>', unsafe_allow_html=True)
-
+# titulo principal
+st.title("Planteamiento del Problema")
 st.markdown("---")
 
 # contenido principal

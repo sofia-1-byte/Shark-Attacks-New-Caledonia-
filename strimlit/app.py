@@ -3,21 +3,19 @@ import utils
 
 st.set_page_config(
     page_title="Analisis Descriptivo de Ataques de Tiburon - Grupo 3",
-    page_icon="",
+    page_icon="🦈",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# mostrar header con logos - SIN PARAMETROS
-utils.mostrar_header()
-
-# titulo principal
-st.title("Análisis Descriptivo de Ataques de Tiburón")
-st.markdown("---")
+# mostrar logos
+utils.mostrar_logos()
 
 # descripcion de la aplicacion
 st.markdown("""
-### Bienvenido al análisis de ataques de tiburón
+
+### Autores: Sofía Rodríguez, Roman Marcano, Diego Aguilar y Andres Mendez.
+## Bienvenido al análisis de ataques de tiburón
 
 Esta aplicación permite explorar y analizar los patrones de ataques de tiburones a nivel mundial 
 desde el año 1595 hasta la actualidad. Utiliza técnicas de estadística descriptiva y consultas 

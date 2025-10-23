@@ -342,6 +342,7 @@ def obtener_ataques_fatales_por_decada():
         return pd.DataFrame()
 
 def cargar_logo(nombre_logo):
+    """carga los logos de la ucv y la eeca"""
     try:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         ruta_logo = os.path.join(current_dir, "logo", nombre_logo)
@@ -351,25 +352,25 @@ def cargar_logo(nombre_logo):
     except Exception as e:
         return None
 
-def mostrar_header():
-    """muestra el header con ambos logos"""
-    # cargar logos
+def mostrar_logos():
+    """Muestra los logos alineados a los extremos"""
+    # Cargar logos
     logo_ucv = cargar_logo("UCV.png") 
     logo_eeca = cargar_logo("EECA.png")  
-    
-    # crear header con dos columnas para los logos
-    col1, col2 = st.columns([1, 1])
-    
+
+    # Crear tres columnas: izquierda, centro (flexible) y derecha
+    col1, col2, col3 = st.columns([1, 2, 1])
+
     with col1:
         if logo_ucv:
-            st.image(logo_ucv, width=100)
-    
-    with col2:
-        if logo_eeca:
-            st.image(logo_eeca, width=100)
-    
-    st.markdown("---")
+            st.image(logo_ucv, width=150)
 
+    with col3:
+        if logo_eeca:
+            st.image(logo_eeca, width=200)
+
+    # Línea separadora
+    st.markdown("---")
 
 def cargar_datos_y_estadisticas():
     """

@@ -4,13 +4,9 @@ import streamlit as st
 import utils
 import utilsg
 
-
-
-
-#Título
 st.set_page_config(
     page_title="Gráficos",
-    page_icon="",
+    page_icon="🦈",
     layout="wide")
 
 #Varibles del fronT_end
@@ -20,8 +16,8 @@ df = utilsg.load_and_clean_data1()
 
 
 
-#Título
-st.markdown('<h1 style="color:#4991f5;text-align:center;">Gráficos</h1>', unsafe_allow_html=True)
+# titulo principal
+st.title("Gráficos")
 st.markdown("---")
 
 #Botones para pedir al usuario que gráfico quiere ver

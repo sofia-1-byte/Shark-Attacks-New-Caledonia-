@@ -3,16 +3,12 @@ import utils
 
 st.set_page_config(
     page_title="Introducción - Ataques de Tiburón",
-    page_icon="",
+    page_icon="🦈",
     layout="wide"
 )
 
-# mostrar header con logos
-utils.mostrar_header()
-
-# Título principal centrado
-st.markdown('<h1 style="color:#4991f5;text-align:center;">Introducción</h1>', unsafe_allow_html=True)
-
+# titulo principal
+st.title("Introducción")
 st.markdown("---")
 
 # contenido principal

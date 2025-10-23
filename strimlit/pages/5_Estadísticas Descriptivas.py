@@ -4,22 +4,22 @@ import pandas as pd
 
 st.set_page_config(
     page_title="Análisis de Datos",
+    page_icon="🦈",
     layout="wide"
 )
 
+# titulo principal
 st.title("Análisis Descriptivo de Datos")
 st.markdown("---")
 
 # Cargar datos 
 df, estadisticas = utils.cargar_datos_y_estadisticas()
 
-if df.empty:
-    st.error("no se pudieron cargar los datos.")
-    st.stop()
-
 metricas = estadisticas['metricas_basicas']
 
-st.header("Tablas de Fatalidad")
+st.header("Analisis de Fatalidad")
+
+st.subheader("Tabla de Fatalidad")
 
 tabla_fatalidad = utils.analizar_frecuencias(df, 'is_fatal_cat', excluir_desconocido=True)
 
@@ -30,10 +30,10 @@ if not tabla_fatalidad.empty:
     
     col1, col2 = st.columns(2)
     with col1:
-        st.metric("Tasa de Fatalidad", f"{metricas['tasa_fatalidad']:.1f}%", 
+        st.metric("Porcentaje de Fatalidad", f"{metricas['tasa_fatalidad']:.1f}%", 
                  help=f"{metricas['ataques_fatales']} casos fatales")
     with col2:
-        st.metric("Tasa de no Fatalidad", f"{100 - metricas['tasa_fatalidad']:.1f}%", 
+        st.metric("Porcentaje de no Fatalidad", f"{100 - metricas['tasa_fatalidad']:.1f}%", 
                  help=f"{metricas['ataques_no_fatales']} casos no fatales")
 
 st.markdown("""
@@ -46,7 +46,9 @@ st.markdown("""
 
 st.markdown("---")
 
-st.header("Tabla de Actividades")
+st.header("Analisis de Actividades Atacadas")
+
+st.subheader("Tabla de Actividades Atacadas")
 
 tabla_actividades = utils.analizar_frecuencias(df, 'activity', excluir_desconocido=True)
 
@@ -55,8 +57,7 @@ if not tabla_actividades.empty:
     
 
     
-    st.subheader("Estadísticas Descriptivas")
-    st.write("5 actividades más atacadas:")
+    st.subheader("Top de las 5 Actividades Más Atacadas")
     
     for i, (_, row) in enumerate(tabla_actividades.head(5).iterrows(), 1):
         st.write(f"{i}. {row['Categoria']}: {row['Frecuencia Absoluta']} incidentes ({row['Frecuencia Relativa %']}%)")
@@ -77,15 +78,16 @@ if not tabla_actividades.empty:
 
 st.markdown("---")
 
-st.header("Tabla de Países")
+st.header("Analisis de Países Atacados")
+
+st.subheader("Tabla de Países Atacados")
 
 tabla_paises = utils.analizar_frecuencias(df, 'country', excluir_desconocido=True)
 
 if not tabla_paises.empty:
     st.dataframe(tabla_paises, use_container_width=True)
 
-    st.subheader("Estadísticas Descriptivas")
-    st.write("Top 5 Países Más Atacados:")
+    st.subheader("Top 5 Países Más Atacados")
     
     for i, (_, row) in enumerate(tabla_paises.head(5).iterrows(), 1):
         st.write(f"{i}. {row['Categoria']}: {row['Frecuencia Absoluta']} incidentes ({row['Frecuencia Relativa %']}%)")
@@ -103,7 +105,9 @@ if not tabla_paises.empty:
 
 st.markdown("---")
 
-st.header("Tablas de Victimas")
+st.header("Analisis de Victimas vs Fatalidad")
+
+st.subheader("Tabla de Victimas vs Fatalidad")
 
 df_edad_grupos = df.copy()
 bins = [0, 18, 30, 45, 60, 100]
@@ -147,15 +151,16 @@ st.markdown("""
 
 st.markdown("---")
 
-st.header("Tabla de Estaciones")
+st.header("Analisis de Estaciones en las que Hubo Ataques")
+
+st.subheader("Tabla de Estaciones en las que Hubo Ataques")
 
 tabla_estaciones = utils.analizar_frecuencias(df, 'season', excluir_desconocido=True)
 
 if not tabla_estaciones.empty:
     st.dataframe(tabla_estaciones, use_container_width=True)
     
-    st.subheader("Estadisticas Descriptivas")
-    st.write("Top Estaciones con Mas Ataques:")
+    st.subheader("Top Estaciones con Mas Ataques")
     
     for i, (_, row) in enumerate(tabla_estaciones.iterrows(), 1):
         st.write(f"{i}. {row['Categoria']}: {row['Frecuencia Absoluta']} incidentes ({row['Frecuencia Relativa %']}%)")
@@ -172,7 +177,9 @@ if not tabla_estaciones.empty:
 
 st.markdown("---")
 
-st.header("Tabla de Actividad vs Fatalidad")
+st.header("Analisis de Actividad vs Fatalidad")
+
+st.subheader("Tabla de Actividad vs Fatalidad")
 
 tablas_actividad = utils.crear_tablas_doble_entrada(df, 'activity', 'is_fatal_cat')
 
@@ -191,7 +198,7 @@ if tablas_actividad:
     with tab4:
         st.dataframe(tablas_actividad['condicional_columnas'], use_container_width=True)
 
-st.subheader("Estadísticas Descriptivas")
+st.subheader("Top Actividades Más y Menos Fatales")
 
 if not estadisticas['tasas_actividad'].empty:
     col1, col2 = st.columns(2)
