@@ -5,13 +5,13 @@ import utils
 import utilsg
 
 st.set_page_config(
-    page_title="Gráficos",
+    page_title="Gráficos 📊",
     page_icon="🦈",
     layout="wide")
 
 #Varibles del fronT_end
-column = ["Año","Tipo de Actividad", "Fatalidad", "Temporada", "Sexo", "Especie de Tiburón", "AM,PM"]
-column2 = [x for x in column if x != "Año" ]
+column = ["Año","Tipo de Actividad", "Fatalidad", "Temporada", "Sexo", "Especie de Tiburón", "AM,PM", "País"]
+column2 = [x for x in column if (x != "Año")  ]
 df = utilsg.load_and_clean_data1()
 
 
@@ -19,19 +19,47 @@ df = utilsg.load_and_clean_data1()
 
 
 # titulo principal
-st.title("Gráficos")
-st.markdown("---")
+st.title("Gráficos 📊")
 
+##Realizamos una página por definición y otra personalizable
 tab1, tab2 = st.tabs([
     "Análisis", "Personalizar"
 ])
 
 with tab1:
-    st.write("aquí no hay un coño xd")
+    st.header("1. Fatalidad 💀")
+    st.markdown("**Proporción de ataques fatales y no fatales**")
 
+    st.plotly_chart(utilsg.grafico_pie("is_fatal_cat", True), key = "1")
+    st.write("**Interpretación**: La mayoría de los ataques registrados son fatales, específicamente un 78% del total de ataques"
+             " registrados")
+
+    st.header("2. Actividad")
+    st.markdown("**Evaluación del riesgo de ataques según el tipo de actividad que realizaba la victima**")
+
+
+    tab3, tab4 =st.tabs(["Normal", "Detallado"])
+    with tab3:
+        st.plotly_chart(utilsg.grafico_barras("activity", columna2=None, excluir=True), key = "2")
+
+        st.markdown("En este gráfico pueden verse la cantidad de de ataques según la actividad que realizaba la victima."
+                    " Las actividades que mas han presentado víctimas son: surfear, bodybooarding, pescar, nadar y "
+                    "paddle boarding ")
+
+    with tab4:
+        st.plotly_chart(utilsg.grafico_barras("activity", "is_fatal_cat", excluir=True), key="4")
+
+        st.markdown("**Interpretación:** Pueden verse la cantidad de de ataques según la actividad que realizaba la victima"
+                " además verificando si fue o no fatal el ataque registrado")
+
+    st.header("3. Paises más Atacados ")
+
+    st.plotly_chart(utilsg.grafico_barras_paises("country", columna2 = None, excluir=True), key="3")
+
+##Personalizar gráficos
 with tab2:
     # Botones para pedir al usuario que gráfico quiere ver
-    kind_graph = st.selectbox("Ingrese el tipo de gráfico que quiere ver", ["Histogramas", "Pie", "Caja y Bigote"])
+    kind_graph = st.selectbox("Ingrese el tipo de gráfico que quiere ver", ["Histograma", "Pie", "Caja y Bigote"])
 
     # condicionales segun los graficos
     if kind_graph == "Pie":
@@ -55,7 +83,7 @@ with tab2:
             col = utilsg.formato(columna)
             st.write(utilsg.grafico_pie(col, True))
 
-    if kind_graph == "Histogramas":
+    if kind_graph == "Histograma":
         check = st.checkbox("Visibilidad de datos")
         check2 = st.checkbox("Bivariante")
         if check2:
