@@ -89,8 +89,8 @@ if kind_graph == "Histogramas":
             column1 = [x for x in column if x != columna]
 
             columna2 = right.selectbox("Ingrese una variable para su grafico", column1)
-            col = utils.formato(columna)
-            col2 = utils.formato(columna2)
+            col = utilsg.formato(columna)
+            col2 = utilsg.formato(columna2)
             st.header("Visual")
             st.write(utilsg.grafico_barras(col, col2, True))
     else:
