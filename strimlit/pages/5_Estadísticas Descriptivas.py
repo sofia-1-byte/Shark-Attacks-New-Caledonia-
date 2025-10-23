@@ -10,6 +10,7 @@ st.set_page_config(
 )
 
 stilez.aplicar_estilos_globales()
+stilez.aplicar_estilos_tablas()
 
 # titulo principal
 st.title("Análisis Descriptivo de Datos")
@@ -53,20 +54,33 @@ st.header("Analisis de Actividades Atacadas")
 
 st.subheader("Tabla de Actividades Atacadas")
 
-tabla_actividades = utils.analizar_frecuencias(df, 'activity', excluir_desconocido=True)
+# Botón para condicionar por fatalidad
+condicionar_fatalidad_act = st.checkbox("Condicionar por Fatalidad", key="actividades")
 
-if not tabla_actividades.empty:
-    st.dataframe(tabla_actividades, use_container_width=True)
+if condicionar_fatalidad_act:
+    # Mostrar tabla de doble entrada
+    tablas_actividad_fatalidad = utils.crear_tablas_doble_entrada(df, 'activity', 'is_fatal_cat')
     
+    if tablas_actividad_fatalidad:
+        tab1, tab2, tab3, tab4 = st.tabs([
+            "Frecuencias Absolutas", "Porcentaje del Total", 
+            "Porcentaje por Fila", "Porcentaje por Columna"
+        ])
+        
+        with tab1:
+            st.dataframe(tablas_actividad_fatalidad['absoluta'], use_container_width=True)
+        with tab2:
+            st.dataframe(tablas_actividad_fatalidad['porcentaje_total'], use_container_width=True)
+        with tab3:
+            st.dataframe(tablas_actividad_fatalidad['condicional_filas'], use_container_width=True)
+        with tab4:
+            st.dataframe(tablas_actividad_fatalidad['condicional_columnas'], use_container_width=True)
+else:
+    tabla_actividades = utils.analizar_frecuencias(df, 'activity', excluir_desconocido=True)
+    if not tabla_actividades.empty:
+        st.dataframe(tabla_actividades, use_container_width=True)
 
-    
-    st.subheader("Top de las 5 Actividades Más Atacadas")
-    
-    for i, (_, row) in enumerate(tabla_actividades.head(5).iterrows(), 1):
-        st.write(f"{i}. {row['Categoria']}: {row['Frecuencia Absoluta']} incidentes ({row['Frecuencia Relativa %']}%)")
-
-
-    st.markdown("""
+st.markdown("""
     <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
     
     Las actividades más realizadas antes de sufrir un ataque de tiburón son: surfear, con 1069 incidentes; bodyboarding, con 976 incidentes y pescar, con 864 incidentes.
@@ -85,17 +99,33 @@ st.header("Analisis de Países Atacados")
 
 st.subheader("Tabla de Países Atacados")
 
-tabla_paises = utils.analizar_frecuencias(df, 'country', excluir_desconocido=True)
+# Botón para condicionar por fatalidad
+condicionar_fatalidad_paises = st.checkbox("Condicionar por Fatalidad", key="paises")
 
-if not tabla_paises.empty:
-    st.dataframe(tabla_paises, use_container_width=True)
-
-    st.subheader("Top 5 Países Más Atacados")
+if condicionar_fatalidad_paises:
+    # Mostrar tabla de doble entrada
+    tablas_paises_fatalidad = utils.crear_tablas_doble_entrada(df, 'country', 'is_fatal_cat')
     
-    for i, (_, row) in enumerate(tabla_paises.head(5).iterrows(), 1):
-        st.write(f"{i}. {row['Categoria']}: {row['Frecuencia Absoluta']} incidentes ({row['Frecuencia Relativa %']}%)")
+    if tablas_paises_fatalidad:
+        tab1, tab2, tab3, tab4 = st.tabs([
+            "Frecuencias Absolutas", "Porcentaje del Total", 
+            "Porcentaje por Fila", "Porcentaje por Columna"
+        ])
+        
+        with tab1:
+            st.dataframe(tablas_paises_fatalidad['absoluta'], use_container_width=True)
+        with tab2:
+            st.dataframe(tablas_paises_fatalidad['porcentaje_total'], use_container_width=True)
+        with tab3:
+            st.dataframe(tablas_paises_fatalidad['condicional_filas'], use_container_width=True)
+        with tab4:
+            st.dataframe(tablas_paises_fatalidad['condicional_columnas'], use_container_width=True)
+else:
+    tabla_paises = utils.analizar_frecuencias(df, 'country', excluir_desconocido=True)
+    if not tabla_paises.empty:
+        st.dataframe(tabla_paises, use_container_width=True)
 
-    st.markdown("""
+st.markdown("""
     <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
     
     Los 3 países con más ataques registrados son con diferencia Estados Unidos, Australia y Sudáfrica. Esto se debe a diversos factores como: alta densidad de población en locaciones costeras;  la gran costa marítima que poseen, ideales para todo tipo de actividades acuáticas; y por último, las especies de tiburones con más ataques habitan en estos países.
@@ -108,32 +138,41 @@ if not tabla_paises.empty:
 
 st.markdown("---")
 
-st.header("Analisis de Victimas vs Fatalidad")
+st.header("Analisis de Edad de Victimas")
 
-st.subheader("Tabla de Victimas vs Fatalidad")
+st.subheader("Tabla de Edad de Victimas")
+
+# Botón para condicionar por fatalidad
+condicionar_fatalidad_edad = st.checkbox("Condicionar por Fatalidad", key="edad")
 
 df_edad_grupos = df.copy()
 bins = [0, 18, 30, 45, 60, 100]
 labels = ['0-18', '19-30', '31-45', '46-60', '60+']
 df_edad_grupos['grupo_edad'] = pd.cut(df_edad_grupos['age'], bins=bins, labels=labels, right=False)
 
-tablas_edad = utils.crear_tablas_doble_entrada(df_edad_grupos, 'grupo_edad', 'is_fatal_cat')
-
-if tablas_edad:
-    tab1, tab2, tab3, tab4 = st.tabs([
-        "Frecuencias Absolutas", "Porcentaje del Total", 
-        "Porcentaje por Fila", "Porcentaje por Columna"
-    ])
+if condicionar_fatalidad_edad:
+    # Mostrar tabla de doble entrada
+    tablas_edad = utils.crear_tablas_doble_entrada(df_edad_grupos, 'grupo_edad', 'is_fatal_cat')
     
-    with tab1:
-        st.dataframe(tablas_edad['absoluta'], use_container_width=True)
-    with tab2:
-        st.dataframe(tablas_edad['porcentaje_total'], use_container_width=True)
-    with tab3:
-        st.dataframe(tablas_edad['condicional_filas'], use_container_width=True)
-    with tab4:
-        st.dataframe(tablas_edad['condicional_columnas'], use_container_width=True)
-
+    if tablas_edad:
+        tab1, tab2, tab3, tab4 = st.tabs([
+            "Frecuencias Absolutas", "Porcentaje del Total", 
+            "Porcentaje por Fila", "Porcentaje por Columna"
+        ])
+        
+        with tab1:
+            st.dataframe(tablas_edad['absoluta'], use_container_width=True)
+        with tab2:
+            st.dataframe(tablas_edad['porcentaje_total'], use_container_width=True)
+        with tab3:
+            st.dataframe(tablas_edad['condicional_filas'], use_container_width=True)
+        with tab4:
+            st.dataframe(tablas_edad['condicional_columnas'], use_container_width=True)
+else:
+    # Mostrar tabla simple de grupos de edad
+    tabla_edad_simple = utils.analizar_frecuencias(df_edad_grupos, 'grupo_edad', excluir_desconocido=True)
+    if not tabla_edad_simple.empty:
+        st.dataframe(tabla_edad_simple, use_container_width=True)
 
 st.subheader("Estadísticas Descriptivas de la Edad")
 
@@ -148,7 +187,6 @@ st.markdown("""
 
  La media de edad de las víctimas es de 26,59 años, con una desviación de 11,02 años con respecto a la media.
 
-
 </div>
 """, unsafe_allow_html=True)
 
@@ -158,17 +196,33 @@ st.header("Analisis de Estaciones en las que Hubo Ataques")
 
 st.subheader("Tabla de Estaciones en las que Hubo Ataques")
 
-tabla_estaciones = utils.analizar_frecuencias(df, 'season', excluir_desconocido=True)
+# Botón para condicionar por fatalidad
+condicionar_fatalidad_estaciones = st.checkbox("Condicionar por Fatalidad", key="estaciones")
 
-if not tabla_estaciones.empty:
-    st.dataframe(tabla_estaciones, use_container_width=True)
+if condicionar_fatalidad_estaciones:
+    # Mostrar tabla de doble entrada
+    tablas_estaciones_fatalidad = utils.crear_tablas_doble_entrada(df, 'season', 'is_fatal_cat')
     
-    st.subheader("Top Estaciones con Mas Ataques")
-    
-    for i, (_, row) in enumerate(tabla_estaciones.iterrows(), 1):
-        st.write(f"{i}. {row['Categoria']}: {row['Frecuencia Absoluta']} incidentes ({row['Frecuencia Relativa %']}%)")
+    if tablas_estaciones_fatalidad:
+        tab1, tab2, tab3, tab4 = st.tabs([
+            "Frecuencias Absolutas", "Porcentaje del Total", 
+            "Porcentaje por Fila", "Porcentaje por Columna"
+        ])
+        
+        with tab1:
+            st.dataframe(tablas_estaciones_fatalidad['absoluta'], use_container_width=True)
+        with tab2:
+            st.dataframe(tablas_estaciones_fatalidad['porcentaje_total'], use_container_width=True)
+        with tab3:
+            st.dataframe(tablas_estaciones_fatalidad['condicional_filas'], use_container_width=True)
+        with tab4:
+            st.dataframe(tablas_estaciones_fatalidad['condicional_columnas'], use_container_width=True)
+else:
+    tabla_estaciones = utils.analizar_frecuencias(df, 'season', excluir_desconocido=True)
+    if not tabla_estaciones.empty:
+        st.dataframe(tabla_estaciones, use_container_width=True)
 
-    st.markdown("""
+st.markdown("""
     <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
     
     La estación del año con más ataques de tiburón registrados es el invierno. Esto puede deberse a que durante esa época la noche suele ser más duradera, cuando los tiburones son mucho más activos, además que en ciertos lugares del hemisferio sur, como lo es Australia, su verano ocurre de diciembre a marzo, donde en otros lugares sería invierno, haciendo que mucha más población se encuentre en las playas, aumentando la posibilidad de algún ataque.
@@ -177,57 +231,6 @@ if not tabla_estaciones.empty:
     
     </div>
     """, unsafe_allow_html=True)
-
-st.markdown("---")
-
-st.header("Analisis de Actividad vs Fatalidad")
-
-st.subheader("Tabla de Actividad vs Fatalidad")
-
-tablas_actividad = utils.crear_tablas_doble_entrada(df, 'activity', 'is_fatal_cat')
-
-if tablas_actividad:
-    tab1, tab2, tab3, tab4 = st.tabs([
-        "Frecuencias Absolutas", "Porcentaje del Total", 
-        "Porcentaje por Fila", "Porcentaje por Columna"
-    ])
-    
-    with tab1:
-        st.dataframe(tablas_actividad['absoluta'], use_container_width=True)
-    with tab2:
-        st.dataframe(tablas_actividad['porcentaje_total'], use_container_width=True)
-    with tab3:
-        st.dataframe(tablas_actividad['condicional_filas'], use_container_width=True)
-    with tab4:
-        st.dataframe(tablas_actividad['condicional_columnas'], use_container_width=True)
-
-st.subheader("Top Actividades Más y Menos Fatales")
-
-if not estadisticas['tasas_actividad'].empty:
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.write("5 Actividades Mas Fatales:")
-        for i, (actividad, row) in enumerate(estadisticas['tasas_actividad'].head(5).iterrows(), 1):
-            st.write(f"{i}. {actividad}: {row['Tasa Fatalidad %']}%")
-    
-    with col2:
-        st.write("5 Actividades Menos Fatales:")
-        actividades_significativas = estadisticas['tasas_actividad'][estadisticas['tasas_actividad']['Total'] >= 5]
-        for i, (actividad, row) in enumerate(actividades_significativas.tail(5).iterrows(), 1):
-            st.write(f"{i}. {actividad}: {row['Tasa Fatalidad %']}%")
-
-
-st.markdown("""
-<div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
-
- Se puede apreciar que la actividad con mayor tasa de mortalidad con bastante diferencia es caerse de la borda de una embarcación, con una tasa de mortalidad del 75%. Seguido de este, las otras dos actividades más fatales son: bañarse (42,42% de mortalidad) y nadar (37,5%).
-
- Por su parte, las actividades menos fatales son boogie boarding (4,76% de mortalidad), remar y surfskiing, con un 0% de mortalidad.
-
-
-</div>
-""", unsafe_allow_html=True)
 
 st.markdown("---")
 st.caption("Análisis Descriptivo de Ataques de Tiburón | Estadísticas Descriptivas")

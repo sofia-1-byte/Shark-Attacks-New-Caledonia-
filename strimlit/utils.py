@@ -5,7 +5,7 @@ import numpy as np
 from typing import Optional, Dict, Any
 import os
 from scipy import stats
-from PIL import Image
+
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(current_dir, "bbdd", "shark_attacks.db")
@@ -32,10 +32,14 @@ SEX_MAPPING = {
 UNKNOWN_VALUES = {'nan', 'none', 'unknown', 'desconocido', ''}
 
 def _conectar_bd() -> Optional[sqlite3.Connection]:
-    """
-    establece conexion con la base de datos sqlite
-    returns:
-        connection: objeto de conexion a la base de datos o none si hay error
+    """ 
+    Esta función intenta conectarse a la base de datos usando la ruta definida en CONFIG.
+    Es una función interna utilizada por otras funciones para obtener conexiones a la BDD.
+    
+    Returns:
+        Optional[sqlite3.Connection]: Objeto de conexión a la base de datos si es exitoso, 
+        None si ocurre algún error durante la conexión.
+        
     """
     try:
         return sqlite3.connect(CONFIG["base_de_datos"])
@@ -46,9 +50,18 @@ def _conectar_bd() -> Optional[sqlite3.Connection]:
 @st.cache_data(show_spinner="cargando y limpiando datos...")
 def load_and_clean_data() -> pd.DataFrame:
     """
-    carga los datos desde la base de datos y realiza procesos de limpieza
-    returns:
-        dataframe: dataframe con los datos limpios o dataframe vacio si hay error
+    Realiza las siguientes operaciones principales:
+    1. Conecta a la bbdd y ejecuta una consulta joint entre tablas de ataques, tiburones y estado de conservación
+    2. Aplica transformaciones y limpieza a las columnas:
+       - Normaliza valores fatales usando FATAL_MAPPING
+       - Normaliza géneros usando SEX_MAPPING
+       - Limpia y estandariza actividades, fases lunares y estaciones
+       - Convierte y valida edades, filtrando valores fuera de rango [0, 100]
+    3. Cachea los resultados para mejorar rendimiento en aplicaciones Streamlit
+    
+    Returns:
+        pd.DataFrame: DataFrame con los datos limpios y normalizados, o DataFrame vacío si hay error.
+        
     """
     try:
         conn = _conectar_bd()
@@ -104,7 +117,24 @@ def load_and_clean_data() -> pd.DataFrame:
         return pd.DataFrame()
 
 def analizar_frecuencias(_df: pd.DataFrame, columna: str, excluir_desconocido: bool = True) -> pd.DataFrame:
-
+    """
+    Calcula distribuciones de frecuencia absoluta y relativa para una columna determinada,
+    permitiendo excluir valores desconocidos para focarse en datos válidos. Es útil para
+    entender la distribución de variables como actividad, país, especie, etc.
+    
+    Args:
+        _df (pd.DataFrame): DataFrame con los datos de ataques de tiburones
+        columna (str): Nombre de la columna categórica a analizar
+        excluir_desconocido (bool): Si True, excluye la categoría 'Desconocido' del análisis
+    
+    Returns:
+        pd.DataFrame: DataFrame con columnas:
+            - Categoria: Valores únicos de la columna analizada
+            - Frecuencia Absoluta: Conteo de ocurrencias
+            - Frecuencia Relativa: Proporción entre 0 y 1
+            - Frecuencia Relativa %: Porcentaje con 2 decimales
+            
+    """
     if columna not in _df.columns:
         return pd.DataFrame()
 
@@ -129,7 +159,24 @@ def analizar_frecuencias(_df: pd.DataFrame, columna: str, excluir_desconocido: b
 
 def crear_tablas_doble_entrada(_df: pd.DataFrame, fila: str, columna: str) -> Dict[str, pd.DataFrame]:
     """
-    crea tablas de doble entrada entre dos variables con distribuciones condicionales
+    Genera cuatro tipos de tablas para analizar la relación entre dos variables:
+    1. Frecuencias absolutas
+    2. Porcentajes sobre el total general
+    3. Distribuciones condicionales por filas (cada fila suma 100%)
+    4. Distribuciones condicionales por columnas (cada columna suma 100%)
+    
+    Args:
+        _df (pd.DataFrame): DataFrame con los datos de ataques
+        fila (str): Nombre de la variable para las filas de la tabla
+        columna (str): Nombre de la variable para las columnas de la tabla
+    
+    Returns:
+        Dict[str, pd.DataFrame]: Diccionario con cuatro tablas y sus explicaciones:
+            - 'absoluta': Frecuencias absolutas de casos
+            - 'porcentaje_total': Porcentajes sobre el total general
+            - 'condicional_filas': Distribución por filas (100% por fila)
+            - 'condicional_columnas': Distribución por columnas (100% por columna)
+            - 'explicacion': Descripciones de cada tipo de tabla       
     """
     if fila not in _df.columns or columna not in _df.columns:
         return {}
@@ -176,11 +223,17 @@ def crear_tablas_doble_entrada(_df: pd.DataFrame, fila: str, columna: str) -> Di
 
 def obtener_estadisticas_completas(_df: pd.DataFrame) -> Dict[str, Any]:
     """
-    calcula estadisticas descriptivas y metricas del dataset
-    parametros:
-        _df: dataframe - dataframe con los datos de ataques
-    returns:
-        dict: diccionario con metricas basicas, estadisticas de edad y tasas por actividad
+    Calcula estadísticas descriptivas completas.
+      
+    Args:
+        _df (pd.DataFrame): DataFrame con los datos de ataques de tiburones
+    
+    Returns:
+        Dict[str, Any]: Diccionario con tres componentes:
+            - 'metricas_basicas': Total registros, conteos fatales, tasa fatalidad, etc.
+            - 'estadisticas_edad': DataFrame con stats descriptivas por tipo de caso
+            - 'tasas_actividad': DataFrame con tasas de fatalidad por actividad ordenadas
+    
     """
     ataques_conocidos = _df['is_fatal_cat'].isin(['Fatal', 'No Fatal']).sum()
     tasa_fatalidad = (_df['is_fatal_cat'].eq('Fatal').sum() / ataques_conocidos * 100) if ataques_conocidos > 0 else 0
@@ -235,175 +288,16 @@ def obtener_estadisticas_completas(_df: pd.DataFrame) -> Dict[str, Any]:
         'tasas_actividad': tasas_actividad
     }
 
-# funciones de sql
-
-@st.cache_data
-def obtener_ataques_por_estacion():
-    """
-    obtiene los ataques por estacion del año usando la vista
-    returns:
-        dataframe: con columnas [estacion, cantidad_ataques, porcentaje]
-    """
-    try:
-        conn = _conectar_bd()
-        if not conn:
-            return pd.DataFrame()
-        
-        consulta = "SELECT * FROM vista_ataques_por_estacion;"
-        resultado = pd.read_sql_query(consulta, conn)
-        conn.close()
-        return resultado
-    except Exception as e:
-        st.error(f"error en consulta de estaciones: {e}")
-        return pd.DataFrame()
-
-@st.cache_data
-def obtener_top5_actividades_fatales():
-    """
-    obtiene el top 5 de actividades con mas ataques fatales usando la vista
-    returns:
-        dataframe: con columnas [actividad, ataques_fatales]
-    """
-    try:
-        conn = _conectar_bd()
-        if not conn:
-            return pd.DataFrame()
-        
-        consulta = "SELECT * FROM vista_top5_actividades_fatales;"
-        resultado = pd.read_sql_query(consulta, conn)
-        conn.close()
-        return resultado
-    except Exception as e:
-        st.error(f"error en consulta de actividades fatales: {e}")
-        return pd.DataFrame()
-
-@st.cache_data
-def obtener_ataques_por_fase_lunar():
-    """
-    obtiene los ataques por fase lunar usando la vista
-    returns:
-        dataframe: con columnas [fase_lunar, cantidad_ataques, porcentaje]
-    """
-    try:
-        conn = _conectar_bd()
-        if not conn:
-            return pd.DataFrame()
-        
-        consulta = "SELECT * FROM vista_ataques_por_fase_lunar;"
-        resultado = pd.read_sql_query(consulta, conn)
-        conn.close()
-        return resultado
-    except Exception as e:
-        st.error(f"error en consulta de fases lunares: {e}")
-        return pd.DataFrame()
-
-@st.cache_data
-def obtener_especies_conservacion():
-    """
-    obtiene las especies implicadas en ataques con su categoria de conservacion usando la vista
-    returns:
-        dataframe: con informacion de especies y estado de conservacion
-    """
-    try:
-        conn = _conectar_bd()
-        if not conn:
-            return pd.DataFrame()
-        
-        consulta = "SELECT * FROM vista_especies_conservacion;"
-        resultado = pd.read_sql_query(consulta, conn)
-        conn.close()
-        return resultado
-    except Exception as e:
-        st.error(f"error en consulta de especies: {e}")
-        return pd.DataFrame()
-
-@st.cache_data
-def obtener_ataques_fatales_por_decada():
-    """
-    obtiene el numero de ataques fatales por decada usando la vista
-    returns:
-        dataframe: con columnas [decada, ataques_fatales]
-    """
-    try:
-        conn = _conectar_bd()
-        if not conn:
-            return pd.DataFrame()
-        
-        consulta = "SELECT * FROM vista_ataques_fatales_por_decada;"
-        resultado = pd.read_sql_query(consulta, conn)
-        conn.close()
-        return resultado
-    except Exception as e:
-        st.error(f"error en consulta de decadas: {e}")
-        return pd.DataFrame()
-
-def cargar_logo(nombre_logo):
-    """carga los logos de la ucv y la eeca"""
-    try:
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        ruta_logo = os.path.join(current_dir, "logo", nombre_logo)
-        if os.path.exists(ruta_logo):
-            return Image.open(ruta_logo)
-        return None
-    except Exception as e:
-        return None
-
-def mostrar_logos():
-    """Muestra los logos alineados a los extremos"""
-    # Cargar logos
-    logo_ucv = cargar_logo("UCV.png") 
-    logo_eeca = cargar_logo("EECA.png")  
-
-    # Crear tres columnas: izquierda, centro (flexible) y derecha
-    col1, col2, col3 = st.columns([1, 2, 1])
-
-    with col1:
-        if logo_ucv:
-            st.image(logo_ucv, width=150)
-
-    with col3:
-        if logo_eeca:
-            st.image(logo_eeca, width=200)
-
-    # Línea separadora
-    st.markdown("---")
 
 def cargar_datos_y_estadisticas():
     """
-    carga los datos y calcula las estadisticas necesarias
-    returns:
-        tuple: dataframe con datos y diccionario con estadisticas
+    Función principal que carga los datos y calcula todas las estadísticas necesarias.
+    
+    Returns:
+        tuple: Tupla con dos elementos:
+            - pd.DataFrame: DataFrame con todos los datos limpios
+            - dict: Diccionario con todas las estadísticas calculadas
     """
     df = load_and_clean_data()
     estadisticas = obtener_estadisticas_completas(df) if not df.empty else {}
     return df, estadisticas
-
-def mostrar_consulta(funcion_consulta, titulo, descripcion, codigo_sql):
-    """muestra una consulta sql con sus resultados y codigo
-    argumentos:
-        funcion_consulta: funcion - funcion que ejecuta la consulta y retorna un dataframe
-        titulo: str - titulo de la seccion
-        descripcion: str - descripcion de la consulta
-        codigo_sql: str - codigo sql de la consulta
-    """
-    st.markdown(f"### {titulo}")
-    st.write(descripcion)
-    
-    # ejecutar consulta
-    with st.spinner("ejecutando consulta..."):
-        df = funcion_consulta()
-    
-    if not df.empty:
-        st.dataframe(df, use_container_width=True)
-        
-        # mostrar estadisticas basicas
-        if len(df) > 0:
-            st.write(f"**total de registros:** {len(df)}")
-            
-        # mostrar codigo sql
-        with st.expander("ver consulta sql"):
-            st.code(codigo_sql, language="sql")
-    else:
-        st.warning("no se encontraron datos para esta consulta")
-    
-    st.markdown("---")

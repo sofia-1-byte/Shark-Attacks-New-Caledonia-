@@ -10,7 +10,7 @@ st.set_page_config(
 )
 
 # mostrar logos
-utils.mostrar_logos()
+stilez.mostrar_logos()
 
 stilez.aplicar_estilos_globales()
 

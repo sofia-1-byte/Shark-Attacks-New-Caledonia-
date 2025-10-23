@@ -1,8 +1,9 @@
 import streamlit as st
-import utils
 import pandas as pd
+import utils
 import os
 import stilez 
+import utilsql 
 
 st.set_page_config(
     page_title="Consultas SQL - Ataques de tiburón",
@@ -14,6 +15,7 @@ st.set_page_config(
 col1, col2 = st.columns([3, 1])
 
 stilez.aplicar_estilos_globales()
+stilez.aplicar_estilos_tablas()
 
 # titulo principal
 st.title("Consultas SQL")
@@ -32,8 +34,8 @@ GROUP BY season
 ORDER BY cantidad_ataques DESC;
 """
 
-utils.mostrar_consulta(
-    utils.obtener_ataques_por_estacion,
+utilsql.mostrar_consulta(
+    utilsql.obtener_ataques_por_estacion,
     "1. Ataques de tiburón por estación del año",
     "Muestra cuantos ataques de tiburones ocurrieron en cada estación del año, ordenados de mayor a menor frecuencia.",
     codigo1
@@ -53,8 +55,8 @@ ORDER BY ataques_fatales DESC
 LIMIT 5;
 """
 
-utils.mostrar_consulta(
-    utils.obtener_top5_actividades_fatales,
+utilsql.mostrar_consulta(
+    utilsql.obtener_top5_actividades_fatales,
     "2. Top 5 actividades con más ataques fatales",
     "Determina el número de ataques fatales según la actividad realizada, mostrando solo las cinco actividades con más ataques fatales.",
     codigo2
@@ -73,8 +75,8 @@ GROUP BY moon_phase
 ORDER BY cantidad_ataques DESC;
 """
 
-utils.mostrar_consulta(
-    utils.obtener_ataques_por_fase_lunar,
+utilsql.mostrar_consulta(
+    utilsql.obtener_ataques_por_fase_lunar,
     "3. Ataques por fase lunar",
     "Relaciona la fase lunar con la cantidad de ataques ocurridos bajo cada una, mostrando el porcentaje respecto al total.",
     codigo3
@@ -93,8 +95,8 @@ WHERE a.species IS NOT NULL
     AND a.species != '';
 """
 
-utils.mostrar_consulta(
-    utils.obtener_especies_conservacion,
+utilsql.mostrar_consulta(
+    utilsql.obtener_especies_conservacion,
     "4. Especies implicadas con categoria de conservacion",
     "Enlista las especies implicadas en ataques junto con su categoria de conservación y descripción mostrando solo una fila por especie.",
     codigo4
@@ -127,8 +129,8 @@ GROUP BY decada
 ORDER BY MIN(year);
 """
 
-utils.mostrar_consulta(
-    utils.obtener_ataques_fatales_por_decada,
+utilsql.mostrar_consulta(
+    utilsql.obtener_ataques_fatales_por_decada,
     "5. Ataques fatales por decada",
     "Cuenta el número de ataques fatales por década, usando la columna year. Crea una nueva columna llamada década que agrupe los años desde 1900 hasta 2025.",
     codigo5
