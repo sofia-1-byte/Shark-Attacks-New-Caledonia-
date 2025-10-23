@@ -22,4 +22,4 @@ Los humanos no son parte de la dieta normal de un tiburón. Los tiburones genera
 
 # Visitenos Aquí Para Ver Nuestra App
 
-https://shark-attacks-trabajo-final-5yjceudtumxr4z2wbvaosx.streamlit.app/
+https://shark-attacks-trabajo-final-2rgmxk4wztkeivfyrtx3gf.streamlit.app/
