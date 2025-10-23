@@ -440,7 +440,7 @@ def grafico_barras_paises(columna: str, columna2: str = None, number: int = 10, 
         fig = px.bar(frecuencia.head(number), x='Categoria', y='Frecuencia Relativa %', title=title)
         return fig
 
-def histograma_años(columna: str, valor: str, number: int = 7):
+def histograma_edad(columna: str, valor: str, number: int = 7):
     """
 
     :param columna: columna del valor para agrupar
@@ -452,11 +452,11 @@ def histograma_años(columna: str, valor: str, number: int = 7):
         df = load_and_clean_data1()
         df1 = df[df[columna] == valor].copy
 
-        fig = px.histogram(df1, x="age", nbins=number)
+        fig = px.histogram(df1, x="age", nbins= number)
 
         return fig
     else:
         df = load_and_clean_data1()
-        fig = px.histogram(df, x="age", nbins=number)
+        fig = px.histogram(df, x="age", nbins= number)
         return fig
 

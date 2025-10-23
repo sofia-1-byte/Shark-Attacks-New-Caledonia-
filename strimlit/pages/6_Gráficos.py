@@ -65,7 +65,10 @@ with tab1:
 
     tab5, tab6 = st.tabs(["Distribución", "Distribución Detallada"])
     with tab5:
-        st.plotly_chart(utilsg.histograma())
+
+        bars1 = st.slider("número de barras del histograma", 0, 20, 7)
+        hist = utilsg.histograma_edad(columna=None, valor=None, number=bars1)
+        st.plotly_chart(hist, key="5")
 
     with tab6:
         left, right = st.columns(2)
