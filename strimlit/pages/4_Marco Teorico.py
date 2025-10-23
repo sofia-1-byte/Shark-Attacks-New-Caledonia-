@@ -218,5 +218,15 @@ El estatus de conservación de los tiburones es preocupante, ya que más de un t
 </div>
 """, unsafe_allow_html=True)
 
+st.markdown("### Variablea Usadas en el Análisis")
+
+st.markdown("""
+<div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
+
+texto sobre las variables usadas en el análisis
+       
+</div>
+""", unsafe_allow_html=True)
+
 st.markdown("---")
 st.caption("Análisis Descriptivo de Ataques de Tiburón | Marco Teórico")

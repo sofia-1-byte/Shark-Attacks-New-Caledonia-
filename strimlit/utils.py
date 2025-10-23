@@ -63,7 +63,6 @@ def load_and_clean_data() -> pd.DataFrame:
             a.age, 
             a.sex, 
             a.season, 
-            a.day_part,
             a.country, 
             a.species,
             s.conservation_status,
@@ -94,9 +93,6 @@ def load_and_clean_data() -> pd.DataFrame:
         df.loc[df['season'].str.upper().isin(UNKNOWN_VALUES), 'season'] = 'Desconocido'
         df.loc[df['season'].isna(), 'season'] = 'Desconocido'
         
-        df['day_part'] = df['day_part'].astype(str).str.upper().str.strip()
-        df.loc[df['day_part'].str.upper().isin(UNKNOWN_VALUES), 'day_part'] = 'Desconocido'
-        df.loc[df['day_part'].isna(), 'day_part'] = 'Desconocido'
         
         df['age'] = pd.to_numeric(df['age'], errors='coerce')
         df['age'] = df['age'].apply(lambda x: x if pd.notna(x) and 0 <= x <= 100 else np.nan)
