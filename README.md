@@ -1,4 +1,4 @@
-# Análisis de los ataques de tiburones registrados en todo el mundo (1595 - 2025)
+# Análisis de los ataques de tiburones registrados en todo el mundo (1900 - 2025)
 
 En este trabajo de investigación se buscará determinar los patrones descriptivos de riesgo asociados a los incidentes de tiburones registrados a nivel global. Esto se logrará mediante el uso de datos obtenidos de los ataques registrados, como la ubicación, especie de tiburón involucrada, temporada del año, fecha y hora, entre otros valores. Todo esto a través de métodos de estadística descriptiva, con el fin de generar información que pueda ayudar a prevenir futuros encuentros inoportunos.
 
