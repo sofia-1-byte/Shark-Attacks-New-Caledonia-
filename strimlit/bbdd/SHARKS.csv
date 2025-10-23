@@ -1,0 +1,13 @@
+id,description,scientific_name,conservation_status
+TIGER_SHARK,Requin tigre,Galeocerdo cuvier,NT
+BULL_SHARK,Requin bouledogue,Carcharhinus leucas,NT
+WHITE_SHARK,Grand requin blanc,Carchardon carcharias,VU
+GREY_REEF_SHARK,Requin gris de récif,Carcharhinus amblyrhynchos,NT
+LEMON_SHARK,Requin citron,Negaprion brevirostris,NT
+BLACK_TIP_REEF_SHARK,Requin à pointes noires,Carcharhinus melanopterus,NT
+NURSE_SHARK,Requin nourrice,Ginglymostoma cirratum,VU
+GREAT_HAMMER_HEAD,Requin Marteau,Sphyrna mokarran,EN
+SHORT_FIN_MARO_SHARK,Requin mako,Isurus oxyrinchus,EN
+SAND_TIGER_SHARK,Requin-taureau,Carcharias taurus,CR
+GIANT_GUITAR_FISH,Grande raie-guitare,Rhynchobatus djiddensis,CR
+WHALE_SHARK,Requin-baleine,Rhincodon typus,EN

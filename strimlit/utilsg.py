@@ -13,7 +13,7 @@ from scipy import stats
 from PIL import Image
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-db_path = os.path.join(current_dir, "..", "bbdd", "shark_attacks.db")
+db_path = os.path.join(current_dir, "bbdd", "shark_attacks.db")
 
 CONFIG = {
     "base_de_datos": db_path,

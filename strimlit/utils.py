@@ -8,7 +8,7 @@ from scipy import stats
 from PIL import Image
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-db_path = os.path.join(current_dir, "..", "bbdd", "shark_attacks.db")
+db_path = os.path.join(current_dir, "bbdd", "shark_attacks.db")
 
 CONFIG = {
     "base_de_datos": db_path,
@@ -342,23 +342,12 @@ def obtener_ataques_fatales_por_decada():
         return pd.DataFrame()
 
 def cargar_logo(nombre_logo):
-    """
-    carga un logo desde diferentes rutas posibles
-    """
     try:
-        # Agrega aquí la ruta exacta donde están tus logos
-        rutas = [
-            f"logos/{nombre_logo}", 
-            f"./logos/{nombre_logo}", 
-            f"C:/Users/PC/OneDrive/Documents/Shark-Attacks-Trabajo-Final/strimlit/logo/{nombre_logo}",
-        ]
-        
-        for ruta in rutas:
-            if os.path.exists(ruta):
-                return Image.open(ruta)
-        
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        ruta_logo = os.path.join(current_dir, "logo", nombre_logo)
+        if os.path.exists(ruta_logo):
+            return Image.open(ruta_logo)
         return None
-        
     except Exception as e:
         return None
 

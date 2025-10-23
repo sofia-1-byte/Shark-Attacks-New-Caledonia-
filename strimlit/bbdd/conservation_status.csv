@@ -1,0 +1,11 @@
+id,id_long,cat,desc
+1,EX,EXTINCT,No known living individuals
+2,EW,EXTINCT,"Known only to survive in captivity, or as a naturalized population outside its historic range"
+3,CR,THREATENED,Extremely high risk of extinction in the wild
+4,EN,THREATENED,Higher risk of extinction in the wild
+5,VU,THREATENED,High risk of extinction in the wild
+6,NT,LOWER_RISK,Likely to become endangered in the near future
+7,CD,LOWER_RISK,"Low risk; is conserved to prevent being near threatened, certain events may lead it to being a higher risk level"
+8,LC,LOWER_RISK,Very Low risk; does not qualify for a higher risk category and not likely to be threatened in the near future. Widespread and abundant taxa are included in this category.
+9,DD,OTHER_CATEGORIES,Not enough data to make an assessment of its risk of extinction
+10,NE,OTHER_CATEGORIES,Has not yet been evaluated against the criteria.
