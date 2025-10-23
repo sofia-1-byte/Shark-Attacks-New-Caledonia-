@@ -2,6 +2,7 @@ import streamlit as st
 import utils
 import pandas as pd
 import os
+import stilez 
 
 st.set_page_config(
     page_title="Consultas SQL - Ataques de tiburón",
@@ -12,11 +13,11 @@ st.set_page_config(
 # Crear columnas 
 col1, col2 = st.columns([3, 1])
 
+stilez.aplicar_estilos_globales()
+
 # titulo principal
 st.title("Consultas SQL")
 st.markdown("---")
-
-
 
 # consulta 1: ataques por estacion del año
 codigo1 = """

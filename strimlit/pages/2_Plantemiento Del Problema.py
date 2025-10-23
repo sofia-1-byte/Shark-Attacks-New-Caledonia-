@@ -1,10 +1,13 @@
 import streamlit as st
+import stilez 
 
 st.set_page_config(
     page_title="Planteamiento del Problema - Ataques de Tiburón",
     page_icon="🦈",
     layout="wide"
 )
+
+stilez.aplicar_estilos_globales()
 
 # titulo principal
 st.title("Planteamiento del Problema")

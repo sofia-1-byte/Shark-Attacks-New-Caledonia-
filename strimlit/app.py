@@ -1,5 +1,6 @@
 import streamlit as st
 import utils
+import stilez 
 
 st.set_page_config(
     page_title="Analisis Descriptivo de Ataques de Tiburon - Grupo 3",
@@ -11,11 +12,15 @@ st.set_page_config(
 # mostrar logos
 utils.mostrar_logos()
 
-# descripcion de la aplicacion
-st.markdown("""
+stilez.aplicar_estilos_globales()
 
-### Autores: Sofía Rodríguez, Roman Marcano, Diego Aguilar y Andres Mendez.
-## Bienvenido al análisis de ataques de tiburón
+st.title("Aplicación Principal")
+st.markdown("---")
+
+# descripcion de la aplicacion
+st.markdown("""           
+
+## Bienvenido al Análisis de Ataques de Tiburón
 
 Esta aplicación permite explorar y analizar los patrones de ataques de tiburones a nivel mundial 
 desde el año 1595 hasta la actualidad. Utiliza técnicas de estadística descriptiva y consultas 
@@ -30,6 +35,9 @@ El análisis se basa en el dataset global de ataques de tiburón, que contiene i
 - Fecha, hora y estación del año
 - Gravedad del incidente (fatal/no fatal)
 - Características demográficas de las víctimas
+            
+
+### Autores: Sofía Rodríguez, Roman Marcano, Diego Aguilar y Andres Mendez.            
 """)
 
 st.markdown("---")

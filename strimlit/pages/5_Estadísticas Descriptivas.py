@@ -1,12 +1,15 @@
 import streamlit as st
 import utils
 import pandas as pd
+import stilez 
 
 st.set_page_config(
     page_title="Análisis de Datos",
     page_icon="🦈",
     layout="wide"
 )
+
+stilez.aplicar_estilos_globales()
 
 # titulo principal
 st.title("Análisis Descriptivo de Datos")

@@ -1,10 +1,13 @@
 import streamlit as st
+import stilez 
 
 st.set_page_config(
     page_title="Marco Teórico - Ataques de Tiburón",
     page_icon="🦈",
     layout="wide"
 )
+
+stilez.aplicar_estilos_globales()
 
 # Título principal
 st.title("Marco Teórico")

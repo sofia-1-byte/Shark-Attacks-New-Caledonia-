@@ -1,10 +1,13 @@
 import streamlit as st
+import stilez 
 
 st.set_page_config(
     page_title="objetivos del Estudio",
     page_icon="🦈",
     layout="wide"
 )
+
+stilez.aplicar_estilos_globales()
 
 # titulo principal
 st.title("Objetivos del Estudio")

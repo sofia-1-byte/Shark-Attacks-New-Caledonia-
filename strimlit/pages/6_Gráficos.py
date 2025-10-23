@@ -3,6 +3,7 @@ import plotly.express as px
 import streamlit as st
 import utils
 import utilsg
+import stilez 
 
 st.set_page_config(
     page_title="Gráficos 📊",
@@ -14,9 +15,7 @@ column = ["Año","Tipo de Actividad", "Fatalidad", "Temporada", "Sexo", "Especie
 column2 = [x for x in column if (x != "Año")  ]
 df = utilsg.load_and_clean_data1()
 
-
-
-
+stilez.aplicar_estilos_globales()
 
 # titulo principal
 st.title("Gráficos 📊")
@@ -31,30 +30,49 @@ with tab1:
     st.markdown("**Proporción de ataques fatales y no fatales**")
 
     st.plotly_chart(utilsg.grafico_pie("is_fatal_cat", True), key = "1")
-    st.write("**Interpretación**: La mayoría de los ataques registrados son fatales, específicamente un 78% del total de ataques"
+    st.write("**Descripción:**: La mayoría de los ataques registrados son fatales, específicamente un 78% del total de ataques"
              " registrados")
 
-    st.header("2. Actividad")
-    st.markdown("**Evaluación del riesgo de ataques según el tipo de actividad que realizaba la victima**")
+    st.header("2. Actividad 🌊")
+    st.markdown("**Descripción: Evaluación del riesgo de ataques según el tipo de actividad que realizaba la victima**")
 
 
     tab3, tab4 =st.tabs(["Normal", "Detallado"])
     with tab3:
         st.plotly_chart(utilsg.grafico_barras("activity", columna2=None, excluir=True), key = "2")
 
-        st.markdown("En este gráfico pueden verse la cantidad de de ataques según la actividad que realizaba la victima."
+        st.markdown("Descripción: En este gráfico pueden verse la cantidad de de ataques según la actividad que realizaba la victima."
                     " Las actividades que mas han presentado víctimas son: surfear, bodybooarding, pescar, nadar y "
                     "paddle boarding ")
 
     with tab4:
         st.plotly_chart(utilsg.grafico_barras("activity", "is_fatal_cat", excluir=True), key="4")
 
-        st.markdown("**Interpretación:** Pueden verse la cantidad de de ataques según la actividad que realizaba la victima"
+        st.markdown("**Descripción:** Pueden verse la cantidad de de ataques según la actividad que realizaba la victima"
                 " además verificando si fue o no fatal el ataque registrado")
 
-    st.header("3. Paises más Atacados ")
+    st.header("3. Paises más Atacados ⚠️ ")
+    bars = st.slider("Número de países en el gráfico", 0, 105, 10)
 
-    st.plotly_chart(utilsg.grafico_barras_paises("country", columna2 = None, excluir=True), key="3")
+    fig= utilsg.grafico_barras_paises(columna =  "country", columna2=None, number = bars,  excluir=True)
+    st.plotly_chart(fig, key="3")
+
+    st.markdown(f"**Descripción:** Pueden verse el porcentaje de ataques según el top **{bars}** de países con"
+                " más ataques")
+
+    st.header("4. Distribución de las Edades segun fatal y no fatal ⚠️ ")
+
+    tab5, tab6 = st.tabs(["Distribución", "Distribución Detallada"])
+    with tab5:
+
+        bars1 = st.slider("número de barras del histograma", 0, 20, 7)
+        hist = utilsg.histograma_edad(columna=None, valor=None, number=bars1)
+        st.plotly_chart(hist, key="5")
+
+    with tab6:
+        left, right = st.columns(2)
+
+
 
 ##Personalizar gráficos
 with tab2:
