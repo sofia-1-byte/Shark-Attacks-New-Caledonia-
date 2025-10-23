@@ -19,3 +19,7 @@ Los tiburones varían en tamaño desde el pequeño tiburón linterna enano, una 
 Un ataque de tiburón es un ataque a un humano por parte de un tiburón. Cada año, se reportan alrededor de 80 ataques no provocados en todo el mundo. A pesar de su rareza, muchas personas temen los ataques de tiburones debido a ataques en serie ocasionales, como los ataques de tiburones de Jersey Shore de 1916, y por películas como la serie Tiburón. De más de 500 especies de tiburones, solo tres son responsables de un número de dos dígitos de ataques fatales no provocados a humanos: el gran tiburón blanco, el tigre y el toro. 
 
 Los humanos no son parte de la dieta normal de un tiburón. Los tiburones generalmente se alimentan de peces pequeños e invertebrados, focas, leones marinos y otros mamíferos marinos. Un ataque de tiburón generalmente ocurre si el tiburón se siente curioso, confundido o atacado.
+
+# Visitenos Aquí Para Ver Nuestra App
+
+https://shark-attacks-trabajo-final-5yjceudtumxr4z2wbvaosx.streamlit.app/
