@@ -221,13 +221,51 @@ El estatus de conservación de los tiburones es preocupante, ya que más de un t
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("### Variablea Usadas en el Análisis")
+st.markdown("### Variables Usadas en el Análisis")
 
 st.markdown("""
 <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
 
-texto sobre las variables usadas en el análisis
-       
+#### 🦈 Variables Esenciales para el Estudio de Ataques de Tiburones
+
+##### 🏷️ Variable Clave - **`is_fatal`** - Fatalidad del Incidente
+
+Esta variable indica si el ataque de tiburón resultó en la muerte de la víctima o no. Utilizamos esta variable para calcular la tasa de mortalidad global y para identificar patrones en los incidentes que terminan en fatalidad versus aquellos donde las víctimas sobreviven. Esta información nos ayuda a comprender mejor el nivel de peligrosidad de estos encuentros y a desarrollar estrategias de prevención más efectivas.
+
+##### 👥 Variables Demográficas - Perfil de las Víctimas
+
+**`age`** - **Edad de la Víctima**
+
+La edad de las personas afectadas nos permite construir un perfil demográfico detallado de las víctimas. Empleamos esta variable para calcular estadísticas descriptivas fundamentales como la media, mediana y moda de las edades, así como para crear grupos etarios que faciliten el análisis de patrones específicos por rangos de edad. Esto nos posibilita identificar qué grupos de edad presentan mayor vulnerabilidad y diseñar campañas de prevención dirigidas específicamente a esas poblaciones.
+
+**`sex`** - **Género de la Víctima**
+
+El género de las víctimas nos proporciona información valiosa sobre la distribución demográfica de los incidentes. Mediante esta variable examinamos si existen diferencias significativas en la frecuencia de ataques entre hombres y mujeres, y analizamos posibles relaciones entre el género y los patrones de actividades realizadas o con la tasa de fatalidad. Este análisis contribuye a comprender mejor los factores socioculturales que pueden influir en la exposición al riesgo.
+
+##### 🏄 Variables de Contexto - Circunstancias del Ataque
+
+**`activity`** - **Actividad Realizada**
+
+Esta variable documenta la actividad específica que la víctima realizaba en el momento del ataque, siendo fundamental para identificar qué comportamientos humanos presentan mayor riesgo de encuentros con tiburones. A través de su análisis podemos clasificar las actividades desde las más peligrosas hasta las más seguras, comprender los contextos en que ocurren los incidentes y desarrollar recomendaciones específicas para cada tipo de actividad recreativa o laboral realizada en ambientes marinos.
+
+**`country`** - **País del Incidente**
+
+La ubicación geográfica de los ataques nos permite crear un mapa global de la distribución de estos incidentes e identificar zonas de alta concentración. Esta variable es esencial para comprender los patrones espaciales de los ataques, relacionarlos con características geográficas específicas y priorizar recursos de prevención en las regiones que registran mayor frecuencia de incidentes. Además, facilita el análisis de factores regionales como políticas de conservación, densidad poblacional costera y características ecológicas locales.
+
+**`season`** - **Estación del Año**
+
+La estacionalidad de los ataques nos revela patrones temporales que pueden estar relacionados con factores ambientales, biológicos y sociales. Esta variable nos permite investigar cómo las variaciones estacionales afectan la frecuencia de encuentros entre humanos y tiburones, considerando aspectos como la temperatura del agua, patrones migratorios de las especies y fluctuaciones en la actividad humana en zonas costeras durante diferentes épocas del año.
+
+##### 🐋 Variables Ecológicas - Contexto de las Especies
+
+**`species`** - **Especie de Tiburón**
+
+La identificación de las especies involucradas en los ataques proporciona información crucial sobre el contexto ecológico de estos incidentes. Esta variable nos permite determinar qué especies están más frecuentemente implicadas en encuentros con humanos, analizar diferencias en el comportamiento entre especies y correlacionar características específicas de cada especie con patrones de ataques. Este conocimiento es fundamental para desarrollar estrategias de coexistencia basadas en el entendimiento de la biología y ecología de estas especies.
+
+**`conservation_status`** - **Estado de Conservación**
+
+El estado de conservación de las especies involucradas añade una dimensión importante de contexto ecológico a nuestro análisis. Esta variable nos permite examinar la relación entre el riesgo de extinción de las especies y su participación en incidentes con humanos, contribuyendo a una perspectiva más equilibrada que considere tanto la seguridad humana como la conservación de la biodiversidad marina. Esta información es valiosa para desarrollar políticas de manejo que armonicen la protección de especies amenazadas con la seguridad pública.
+
 </div>
 """, unsafe_allow_html=True)
 
