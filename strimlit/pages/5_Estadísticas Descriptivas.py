@@ -21,7 +21,7 @@ df, estadisticas = utils.cargar_datos_y_estadisticas()
 
 metricas = estadisticas['metricas_basicas']
 
-st.header("Analisis de Fatalidad")
+st.header("Análisis de Fatalidad")
 
 st.subheader("Tabla de Fatalidad")
 
@@ -50,7 +50,7 @@ st.markdown("""
 
 st.markdown("---")
 
-st.header("Analisis de Actividades Atacadas")
+st.header("Análisis de Actividades Atacadas")
 
 st.subheader("Tabla de Actividades Atacadas")
 
@@ -87,6 +87,10 @@ st.markdown("""
 
     Por otra parte, las actividades menos comunes al sufrir un ataque de tiburón son: flotar en el agua, con 14 incidentes; remar, con 13 incidentes y el suceso que menos ocurre durante ataques de tiburones es caerse de la borda de una embarcación, con solo 4 ataques registrados.
 
+    Si condicionamos la tabla de actividades por fatalidad podemos observar que la actividad más mortal es nadar, con 324 encuentros (6,48% de los ataques totales). A este le siguen: bodyboarding, con 313 víctimas fatales (6,26%), y pescar, con 164 fatalidades (3,28%). 
+
+    En cambio, las actividades menos fatales son remar, surfskiing y boogie boarding, con 0, 0 y 2 ataques fatales respectivamente, representando solo el 0,04% de los ataques totales.
+        
     Podemos decir que la mayoría de ataques se producen al realizar actividades que requieran estar mucho tiempo en el agua y que hacen que el tiburón confunde a la persona con una presa. En el caso de la pesca se puede deber a la atracción del tiburón buscando alguna presa.
 
     
@@ -95,7 +99,7 @@ st.markdown("""
 
 st.markdown("---")
 
-st.header("Analisis de Países Atacados")
+st.header("Análisis de Países Atacados")
 
 st.subheader("Tabla de Países Atacados")
 
@@ -132,15 +136,17 @@ st.markdown("""
 
     En cambio, los países con menos ataques registrados suelen tener climas no favorables para la mayoría de especies de tiburones causantes de ataques, además de tener un bajo número de población tanto en el territorio total como en las costas. La mayoría de países que se encuentran en esta situación poseen climas fríos como Islandia o las islas Británicas, no poseen grandes líneas costeras como Líbano o países de la península de los Balcanes, o simplemente son países que no poseen gran actividad en los océanos.
 
-    
+    Al condicionar esta variable con la de fatalidad, se puede apreciar que el país con mayor cantidad de ataques mortales es Australia, con 245 ataques (4,9% del total); seguido están Estados Unidos y Sudáfrica, con 188 (3,76%) y 110 (2,2%) ataques respectivamente.
+
+            
     </div>
     """, unsafe_allow_html=True)
 
 st.markdown("---")
 
-st.header("Analisis de Edad de Victimas")
+st.header("Análisis de Edad de Víctimas")
 
-st.subheader("Tabla de Edad de Victimas")
+st.subheader("Tabla de Edad de Víctimas")
 
 # Botón para condicionar por fatalidad
 condicionar_fatalidad_edad = st.checkbox("Condicionar por Fatalidad", key="edad")
@@ -182,17 +188,21 @@ if not estadisticas['estadisticas_edad'].empty:
 st.markdown("""
 <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
 
- La gran mayoría de víctimas de estos encuentros inoportunos poseen una edad en el rango de entre 19 a 30 años, con un total de 3084 ataques de tiburón a este grupo, siendo con diferencia el grupo de edad más afectado con un porcentaje del 61.67%. 
- Los demás grupos de edad afectados en orden son: entre 18 a 20 años con 816 afectados (un 16,32%), entre 31 a 45 años con 690 afectados (13,8%), entre 46 a 60 años con 316 afectados (6,32%), y el grupo menos afectado son las personas mayores a 60 años con solo 95 victimas (1,9%).
+ La mayoría de víctimas de estos encuentros inoportunos poseen una edad en el rango de entre 19 a 30 años, con un total de 1851 ataques de tiburón a este grupo, siendo con diferencia el grupo de edad más afectado con un porcentaje del 37,01%. 
 
- La media de edad de las víctimas es de 26,59 años, con una desviación de 11,02 años con respecto a la media.
+ Los demás grupos de edad afectados en orden son: entre 0 a 18 años con 1026 afectados (un 20,52%), entre 31 a 45 años con 942 afectados (18,84%), entre 46 a 60 años con 669 afectados (13,38%), y el grupo menos afectado son las personas mayores a 60 años con solo 513 víctimas (10,26%).
+
+ La media de edad de las víctimas es de 32,06 años, con una desviación de 17,33 años con respecto a la media.
+
+ Si se condiciona esta variable con la de fatalidad, se puede visualizar que los grupos de edad con mayor cantidad de ataques fatales son: de 19 a 30 años con 424 ataques (8,48% del total de ataques), 31 a 45 años con 197 ataques (3,94%), 0 a 18 años con 186 ataques (3,72%), 46 a 60 años con 155 ataques (3,1%), y los mayores de 60 años con 137 ataques registrados como mortales (2,74%).
+
 
 </div>
 """, unsafe_allow_html=True)
 
 st.markdown("---")
 
-st.header("Analisis de Estaciones en las que Hubo Ataques")
+st.header("Análisis de Estaciones en las que Hubo Ataques")
 
 st.subheader("Tabla de Estaciones en las que Hubo Ataques")
 
@@ -228,6 +238,9 @@ st.markdown("""
     La estación del año con más ataques de tiburón registrados es el invierno. Esto puede deberse a que durante esa época la noche suele ser más duradera, cuando los tiburones son mucho más activos, además que en ciertos lugares del hemisferio sur, como lo es Australia, su verano ocurre de diciembre a marzo, donde en otros lugares sería invierno, haciendo que mucha más población se encuentre en las playas, aumentando la posibilidad de algún ataque.
 
     Después del invierno, las estaciones con más ataques registrados son otoño y verano, siendo primavera la estación con menos ataques registrados.
+            
+    Cuando se condiciona esta variable con la variable de fatalidad, podemos ver que la estación con mayor cantidad de ataques de tiburones con resultados fatales es el verano, con 306 ataques registrados (un 6,12 % del total). Las demás estaciones en orden de ataques fatales son: otoño con 289 ataques (4,52%), invierno con 278 ataques (5,56%) y por último primavera, con 226 ataques mortales (4,52%).
+        
     
     </div>
     """, unsafe_allow_html=True)
