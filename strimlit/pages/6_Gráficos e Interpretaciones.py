@@ -6,20 +6,20 @@ import utilsg
 import stilez 
 
 st.set_page_config(
-    page_title="Gráficos e Interpretación de los Datos 📊",
+    page_title="Gráficos",
     page_icon="🦈",
     layout="wide")
 
 stilez.aplicar_estilos_globales()
 
 # título principal
-st.title("Análisis Visual de Ataques de Tiburón 📊")
+st.title("Análisis Visual de Ataques de Tiburón ")
 st.markdown("---")
 
 # Cargar datos
 df = utilsg.load_and_clean_data1()
 
-# 1. FATALIDAD (siempre gráfico circular)
+# 1. FATALIDAD 
 st.header("1. Análisis de Fatalidad 💀")
 
 col1, col2 = st.columns([2, 1])
@@ -39,7 +39,7 @@ with col2:
 st.markdown("---")
 
 # 2. ACTIVIDADES
-st.header("2. Análisis de Actividades 🌊")
+st.header("2. Análisis de Actividades ")
 
 col1, col2 = st.columns([3, 1])
 with col2:
@@ -66,8 +66,8 @@ else:
 
 st.markdown("---")
 
-# 3. EDAD - Distribución
-st.header("3. Análisis Demográfico - Distribución de Edad 👥")
+# 3. EDAD 
+st.header("3. Análisis Para la Distribución de Edad ")
 
 col1, col2 = st.columns([3, 1])
 with col2:
@@ -101,7 +101,7 @@ else:
 st.markdown("---")
 
 # 4. EDAD - Grupos
-st.header("4. Análisis Demográfico - Grupos de Edad 👥")
+st.header("4. Análisis Para los Grupos de Edad 👥")
 
 col1, col2 = st.columns([3, 1])
 with col2:
@@ -137,7 +137,7 @@ else:
 st.markdown("---")
 
 # 5. TEMPORADAS
-st.header("5. Análisis Estacional 📅")
+st.header("5. Análisis Estacional")
 
 col1, col2 = st.columns([3, 1])
 with col2:

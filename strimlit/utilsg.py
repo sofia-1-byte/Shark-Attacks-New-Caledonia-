@@ -1,4 +1,3 @@
-# utilsg.py - Versión corregida
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -8,27 +7,18 @@ from plotly.subplots import make_subplots
 from typing import Optional
 import utils
 
-# =============================================================================
-# CONFIGURACIÓN DE COLORES - PALETA MEJORADA
-# =============================================================================
-
 COLORES = {
-    'fatal': '#1f77b4',        # Azul oscuro para fatal
-    'no_fatal': '#aec7e8',     # Azul claro para no fatal
-    'principal': '#2E86AB',    # Azul principal
-    'edad': '#3498DB',         # AZUL BONITO para gráfico de edad no condicionado
-    'secundario': '#A3D5F7',   # Azul secundario
-    'acento': '#0066CC',       # Azul acento
-    'fondo': '#F0F8FF'         # Azul muy claro para fondo
+    'fatal': '#1f77b4',      
+    'no_fatal': '#aec7e8',     
+    'principal': '#2E86AB',    
+    'edad': '#3498DB',         
+    'secundario': '#A3D5F7',   
+    'fondo': '#F0F8FF'        
 }
 
 # Paletas para gráficos
 PALETA_AZULES = ['#1f77b4', '#aec7e8', '#6baed6', '#3182bd', '#08519c', '#d0d1e6', '#9ecae1', '#c6dbef']
 PALETA_SECUENCIAL = 'Blues'
-
-# =============================================================================
-# FUNCIONES DE GRÁFICOS MEJORADAS (REUTILIZANDO FUNCIONES DE utils.py)
-# =============================================================================
 
 def load_and_clean_data1() -> pd.DataFrame:
     """Carga datos usando utils y añade transformaciones específicas para gráficos"""
@@ -138,17 +128,26 @@ def grafico_actividad_interactivo(condicionar_fatalidad: bool = False) -> go.Fig
                     y=tabla_absoluta[fatal_type],
                     marker_color=color,
                     text=tabla_absoluta[fatal_type].astype(str) + '<br>(' + porcentajes.astype(str) + '%)',
-                    textposition='auto',
+                    textposition='outside',  # Cambiado a 'outside' para mejor visibilidad
                     hovertemplate=f'<b>%{{x}}</b><br>{fatal_type}: %{{y}} casos<extra></extra>'
                 ))
+        
+        # Calcular el máximo valor para ajustar el margen superior
+        max_valor = tabla_absoluta.max().max()
         
         fig.update_layout(
             title="Actividades más Comunes - Condicionado por Fatalidad",
             xaxis_title="Actividad",
             yaxis_title="Número de Ataques",
             barmode='group',
-            showlegend=True
+            showlegend=True,
+            margin=dict(t=100, b=100),  # Aumentar márgenes superior e inferior
+            height=500  # Altura fija para mejor visualización
         )
+        
+        # Ajustar rango del eje Y para dar espacio a las etiquetas
+        fig.update_yaxes(range=[0, max_valor * 1.15])
+        
     else:
         # Usar analizar_frecuencias de utils para datos consistentes
         tabla_actividad = utils.analizar_frecuencias(df, 'activity_clean', excluir_desconocido=True)
@@ -165,11 +164,20 @@ def grafico_actividad_interactivo(condicionar_fatalidad: bool = False) -> go.Fig
             text='Frecuencia Relativa %'  # Mostrar porcentajes en barras
         )
         
-        # Mejorar el formato de las etiquetas
         fig.update_traces(
             texttemplate='%{y}<br>(%{text}%)',
             textposition='outside'
         )
+        
+        # Ajustar márgenes y altura
+        fig.update_layout(
+            margin=dict(t=100, b=100),
+            height=500
+        )
+        
+        # Ajustar rango del eje Y
+        max_valor = top_actividades['Frecuencia Absoluta'].max()
+        fig.update_yaxes(range=[0, max_valor * 1.15])
     
     return fig
 
@@ -198,7 +206,9 @@ def grafico_edad_interactivo(condicionar_fatalidad: bool = False) -> go.Figure:
         fig.update_layout(
             xaxis_title="Edad (años)",
             yaxis_title="Número de Ataques",
-            legend_title="Fatalidad"
+            legend_title="Fatalidad",
+            margin=dict(t=80, b=80),
+            height=450
         )
     else:
         # Usar color VERDE para el gráfico no condicionado
@@ -215,6 +225,11 @@ def grafico_edad_interactivo(condicionar_fatalidad: bool = False) -> go.Figure:
         mean_age = age_data['age'].mean()
         fig.add_vline(x=mean_age, line_dash="dash", line_color=COLORES['acento'], 
                      annotation_text=f"Media: {mean_age:.1f} años")
+        
+        fig.update_layout(
+            margin=dict(t=80, b=80),
+            height=450
+        )
     
     return fig
 
@@ -248,17 +263,26 @@ def grafico_grupo_edad_interactivo(condicionar_fatalidad: bool = False) -> go.Fi
                     y=tabla_absoluta[fatal_type],
                     marker_color=color,
                     text=tabla_absoluta[fatal_type].astype(str) + '<br>(' + porcentajes.astype(str) + '%)',
-                    textposition='auto',
+                    textposition='outside',  # Cambiado a 'outside' para mejor visibilidad
                     hovertemplate=f'<b>%{{x}}</b><br>{fatal_type}: %{{y}} casos<extra></extra>'
                 ))
+        
+        # Calcular el máximo valor para ajustar el margen superior
+        max_valor = tabla_absoluta.max().max()
         
         fig.update_layout(
             title="Grupos de Edad - Condicionado por Fatalidad",
             xaxis_title="Grupo de Edad",
             yaxis_title="Número de Ataques",
             barmode='group',
-            showlegend=True
+            showlegend=True,
+            margin=dict(t=100, b=100),
+            height=500
         )
+        
+        # Ajustar rango del eje Y para dar espacio a las etiquetas
+        fig.update_yaxes(range=[0, max_valor * 1.15])
+        
     else:
         # Usar analizar_frecuencias de utils
         tabla_edad = utils.analizar_frecuencias(df, 'age_group', excluir_desconocido=True)
@@ -279,6 +303,16 @@ def grafico_grupo_edad_interactivo(condicionar_fatalidad: bool = False) -> go.Fi
             texttemplate='%{y}<br>(%{text}%)',
             textposition='outside'
         )
+        
+        # Ajustar márgenes y altura
+        fig.update_layout(
+            margin=dict(t=100, b=100),
+            height=500
+        )
+        
+        # Ajustar rango del eje Y
+        max_valor = tabla_edad['Frecuencia Absoluta'].max()
+        fig.update_yaxes(range=[0, max_valor * 1.15])
     
     return fig
 
@@ -312,9 +346,12 @@ def grafico_temporada_interactivo(condicionar_fatalidad: bool = False) -> go.Fig
                     y=tabla_absoluta[fatal_type],
                     marker_color=color,
                     text=tabla_absoluta[fatal_type].astype(str) + '<br>(' + porcentajes.astype(str) + '%)',
-                    textposition='auto',
+                    textposition='outside',  # Cambiado a 'outside' para mejor visibilidad
                     hovertemplate=f'<b>%{{x}}</b><br>{fatal_type}: %{{y}} casos<extra></extra>'
                 ))
+        
+        # Calcular el máximo valor para ajustar el margen superior
+        max_valor = tabla_absoluta.max().max()
         
         fig.update_layout(
             title="Ataques por Temporada - Condicionado por Fatalidad",
@@ -322,8 +359,14 @@ def grafico_temporada_interactivo(condicionar_fatalidad: bool = False) -> go.Fig
             yaxis_title="Número de Ataques",
             barmode='group',
             showlegend=True,
-            xaxis={'categoryorder': 'array', 'categoryarray': ['Primavera', 'Verano', 'Otoño', 'Invierno']}
+            xaxis={'categoryorder': 'array', 'categoryarray': ['Primavera', 'Verano', 'Otoño', 'Invierno']},
+            margin=dict(t=100, b=100),
+            height=500
         )
+        
+        # Ajustar rango del eje Y para dar espacio a las etiquetas
+        fig.update_yaxes(range=[0, max_valor * 1.15])
+        
     else:
         # Usar analizar_frecuencias de utils
         tabla_temporada = utils.analizar_frecuencias(df, 'season_clean', excluir_desconocido=True)
@@ -345,5 +388,15 @@ def grafico_temporada_interactivo(condicionar_fatalidad: bool = False) -> go.Fig
             texttemplate='%{y}<br>(%{text}%)',
             textposition='outside'
         )
+        
+        # Ajustar márgenes y altura
+        fig.update_layout(
+            margin=dict(t=100, b=100),
+            height=500
+        )
+        
+        # Ajustar rango del eje Y
+        max_valor = tabla_temporada['Frecuencia Absoluta'].max()
+        fig.update_yaxes(range=[0, max_valor * 1.15])
     
     return fig
