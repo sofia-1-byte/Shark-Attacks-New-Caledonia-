@@ -325,9 +325,12 @@ def tabla_bivariante(_df: pd.DataFrame, species: str, is_fatal_cat: str, unk: bo
                     data2 = pd.DataFrame({
                         is_fatal_cat: [y]})
                     data3 = pd.DataFrame({
-                        "count": [b2[0]],
-                        'Frecuencia Relativa %': [0/len(df)*100]})
-                    data = pd.concat([data, data2, data3], axis=1)
+                        "count": [b2[0]]
+                        })
+                    data6 = pd.DataFrame({
+                        'Frecuencia Relativa %': [b2[0] / len(df) * 100]
+                    })
+                    data = pd.concat([data, data2, data3,data6], axis=1)
 
                 else:
                     data = pd.DataFrame({
@@ -335,9 +338,13 @@ def tabla_bivariante(_df: pd.DataFrame, species: str, is_fatal_cat: str, unk: bo
                     data2 = pd.DataFrame({
                         is_fatal_cat: [y]})
                     data3 = pd.DataFrame({
-                        "count": [0],
-                        'Frecuencia Relativa %': [0/len(df)*100]})
-                    data = pd.concat([data, data2, data3], axis=1)
+                        "count": [0]})
+
+                    data6 = pd.DataFrame({
+                        'Frecuencia Relativa %': [0 / len(df) * 100]
+                    })
+
+                    data = pd.concat([data, data2, data3, data6], axis=1)
 
 
             else:
@@ -349,9 +356,14 @@ def tabla_bivariante(_df: pd.DataFrame, species: str, is_fatal_cat: str, unk: bo
                     data2 = pd.DataFrame({
                         is_fatal_cat: [y]})
                     data3 = pd.DataFrame({
-                        "count": [b2[0]],
-                        'Frecuencia Relativa %': [b2[0]/len(df)*100]})
-                    data4 = pd.concat([data1, data2, data3], axis=1)
+                        "count": [b2[0]]
+                    })
+                    data6 = pd.DataFrame({
+                        'Frecuencia Relativa %': [b2[0] / len(df) * 100]
+                    })
+
+
+                    data4 = pd.concat([data1, data2, data3, data6], axis=1)
 
                     data = pd.concat([data4, data], axis=0)
                 else:
@@ -360,9 +372,12 @@ def tabla_bivariante(_df: pd.DataFrame, species: str, is_fatal_cat: str, unk: bo
                     data2 = pd.DataFrame({
                         is_fatal_cat: [y]})
                     data3 = pd.DataFrame({
-                        "count": [0],
-                    'Frecuencia Relativa %': [0/len(df)*100]})
-                    data4 = pd.concat([data1, data2, data3], axis=1)
+                        "count": [0]})
+                    data6 = pd.DataFrame({
+                        'Frecuencia Relativa %': [0 / len(df) * 100]
+                    })
+
+                    data4 = pd.concat([data1, data2, data3, data6], axis=1)
 
                     data = pd.concat([data4, data], axis=0)
 
@@ -448,7 +463,7 @@ def histograma_edad(columna: str, valor: str, number: int = 7):
     :param number: cantidad de barras en el gráfico
 
     """
-    if not columna == None and valor == None:
+    if not columna != None and valor != None:
         df = load_and_clean_data1()
         df1 = df[df[columna] == valor].copy
 
