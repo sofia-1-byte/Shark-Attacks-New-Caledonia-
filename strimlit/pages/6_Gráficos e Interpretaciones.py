@@ -6,232 +6,167 @@ import utilsg
 import stilez 
 
 st.set_page_config(
-    page_title="Graficos e Interpretación de los datos 📊",
+    page_title="Gráficos e Interpretación de los Datos 📊",
     page_icon="🦈",
     layout="wide")
 
-#Varibles del fronT_end
-especial = ["AM,PM"]
-
-column = ["Año","Tipo de Actividad", "Fatalidad", "Temporada", "Sexo", "Especie de Tiburón",  "País"]
-column2 = [x for x in column if (x != "Año")  ]
-df = utilsg.load_and_clean_data1()
-
 stilez.aplicar_estilos_globales()
 
-# titulo principal
-st.title("Gráficos e Interpretaciones 📊")
+# título principal
+st.title("Análisis Visual de Ataques de Tiburón 📊")
+st.markdown("---")
 
-##Realizamos una página por definición y otra personalizable
-tab1, tab2 = st.tabs([
-    "Análisis", "Personalizar"
-])
+# Cargar datos
+df = utilsg.load_and_clean_data1()
 
-with tab1:
-    st.header("1. Fatalidad 💀")
+# 1. FATALIDAD (siempre gráfico circular)
+st.header("1. Análisis de Fatalidad 💀")
 
+col1, col2 = st.columns([2, 1])
 
-    st.plotly_chart(utilsg.grafico_pie("is_fatal_cat", True), key = "1")
+with col1:
+    st.plotly_chart(utilsg.grafico_fatalidad_interactivo(), use_container_width=True)
 
-    st.write(
-        "**Descripción:** Se puede notar que la mayoría de los ataques registrados son fatales, específicamente un 78% del total de ataques"
-        " registrados, mientras que el total de ataques no fatales registrados corresponden a un 22%")
+with col2:
+    st.markdown("""
+    **Interpretación:**
+    - **78%** de los ataques son **no fatales**
+    - **22%** resultan en fatalidades
+    - La mayoría de víctimas sobreviven al encuentro
+    - Los ataques fatales son la excepción, no la regla
+    """)
 
+st.markdown("---")
 
-    st.header("2. Actividad 🌊")
+# 2. ACTIVIDADES
+st.header("2. Análisis de Actividades 🌊")
 
+col1, col2 = st.columns([3, 1])
+with col2:
+    cond_act = st.checkbox("Condicionar por Fatalidad", key="actividad")
 
+with col1:
+    fig_act = utilsg.grafico_actividad_interactivo(condicionar_fatalidad=cond_act)
+    st.plotly_chart(fig_act, use_container_width=True)
 
+# Interpretación condicional
+if cond_act:
+    st.markdown("""
+    **Interpretación - Condicionado por Fatalidad:**
+    - La **natación** presenta la **mayor tasa de fatalidad** 
+    - **Bodyboarding** y **pesca** siguen en riesgo con tasas significativas
+    - Actividades como **surfing** tienen menor tasa de fatalidad relativa
+    """)
+else:
+    st.markdown("""
+    **Interpretación:**
+    - **Surfing**, **Bodyboarding**, y **Pesca** son las actividades más atacadas
+    - Distribución refleja popularidad de actividades en zonas costeras
+    """)
 
-    tab3, tab4 =st.tabs(["Normal", "Detallado"])
-    with tab3:
-        st.plotly_chart(utilsg.grafico_barras("activity", columna2=None, excluir=True), key = "2")
-        st.markdown(
-            "**Descripción**: En este gráfico se puede ver la cantidad de de ataques según la actividad que realizaba la victima."
-            " Las actividades que mas han presentado víctimas son: surfear (21.38%), bodybooarding (19,52%), pescar (19.48%), nadar (17.28%) y "
-            " paddle boarding (7.28%). En total estás cinco actividades mayormente reportadas en los ataques suponen un 84.94 %"
-            " de los ataques totales. Con esto podría pensarse que el resto de actividades son menos frecuentes en los registros de "
-            " ataques de tiburones por ser menos"
-            " pupulares en las zonas donde ocurren ataques, o incluso, menos populares en general ")
+st.markdown("---")
 
-    with tab4:
-        st.plotly_chart(utilsg.grafico_barras("activity", "is_fatal_cat", excluir=True), key="4")
+# 3. EDAD - Distribución
+st.header("3. Análisis Demográfico - Distribución de Edad 👥")
 
-        st.markdown("**Descripción:** Pueden verse la cantidad de de ataques según la actividad que realizaba la víctima"
-                " además verificando si fue o no fatal el ataque registrado: Aquí se puede ver que la mayoría de ataques fatales"
-                    " fueron victimas que se encontraban nadando (6.48%). De segundo lugar se encuentra el BodyBoarding con un (6.27%),"
-                    " esto podría sugerir que el hecho de tener el cuerpo mas cercano al agua implica mayor riesgo de un ataque fatal,"
-                    " o incluso que la forma en la que se mueve la víctima la haga suceptible de ser atacada por un tiburón . De tercer"
-                    " lugar está la Pesca (3.28%), de cuarto el Paddle Bording (2%) y por ultimo el surfeo (1.4%)")
+col1, col2 = st.columns([3, 1])
+with col2:
+    cond_edad = st.checkbox("Condicionar por Fatalidad", key="edad")
 
-    ####
-    st.header("3. Paises más Atacados 🏴 ")
-    bars = st.slider("Número de países en el gráfico", 0, 105, 10)
+with col1:
+    fig_edad = utilsg.grafico_edad_interactivo(condicionar_fatalidad=cond_edad)
+    st.plotly_chart(fig_edad, use_container_width=True)
 
-    fig = utilsg.grafico_barras_paises(columna="country", columna2=None, number=bars, excluir=True)
-    st.plotly_chart(fig, key="3")
+# Interpretación condicional
+if cond_edad:
+    st.markdown("""
+    **Interpretación - Condicionado por Fatalidad:**
+    - Distribución similar entre fatal y no fatal, con ligero sesgo
+    - **Adultos jóvenes** (20-35 años) predominan en ambos grupos
+    - Mayores de 60 años muestran proporción similar de fatalidad
+    - No hay grupo etario con riesgo desproporcionadamente alto
+    - La edad no parece ser un factor determinante en la fatalidad
+    """)
+else:
+    st.markdown("""
+    **Interpretación:**
+    - Distribución **leptocúrtica** con sesgo positivo
+    - **Media de edad**: 32.06 años
+    - **Pico principal**: 20-24 años (adultos jóvenes)
+    - **Jóvenes y adultos jóvenes** son los más afectados
+    - Refleja perfil demográfico de actividades de riesgo
+    - Menor participación de niños y adultos mayores
+    """)
 
-    st.markdown(f"**Descripción:** Puede verse el porcentaje de ataques según el top **{bars}** de países con"
-                " más ataques. Los países con mas ataques reportados son: Estados Unidos(38.73%), Australia (20.92%), Sudafrica (10.32%),"
-                " Nueva Guinea (2.2%) y Nueva Caledonia (2.12%). Entre los 5 países con más reportes"
-                " se encuentra el 74.29% del total de todos los ataques registrados.")
-    #####
+st.markdown("---")
 
+# 4. EDAD - Grupos
+st.header("4. Análisis Demográfico - Grupos de Edad 👥")
 
-    st.header("4. Distribución de las Edades ⚠️ ")
+col1, col2 = st.columns([3, 1])
+with col2:
+    cond_grupo_edad = st.checkbox("Condicionar por Fatalidad", key="grupo_edad")
 
-    st.markdown("**Edad y Frecuencia**")
+with col1:
+    fig_grupo_edad = utilsg.grafico_grupo_edad_interactivo(condicionar_fatalidad=cond_grupo_edad)
+    st.plotly_chart(fig_grupo_edad, use_container_width=True)
 
-    hist = utilsg.histograma_edad(columna=None, valor=None, number= 20)
-    st.plotly_chart(hist, key="87")
+# Interpretación condicional
+if cond_grupo_edad:
+    st.markdown("""
+    **Interpretación - Condicionado por Fatalidad:**
+    - **19-30 años**: Mayor número absoluto de fatalidades 
+    - **0-18 años**: Tasa de fatalidad moderada 
+    - **31-45 años**: Segunda en fatalidades absolutas 
+    - Distribución proporcional a la frecuencia por grupo
+    - No hay grupo de edad con riesgo significativamente mayor
+    - Factores como condición física pueden influir en la supervivencia
+    """)
+else:
+    st.markdown("""
+    **Interpretación:**
+    - **19-30 años** (grupo más afectado)
+    - **0-18 años** (segundo lugar)
+    - **31-45 años** (tercer lugar)
+    - **46-60 años** (cuarto lugar)
+    - **60+ años** (menos afectado)
+    - **Adultos jóvenes** predominan claramente
+    - Refleja perfil de actividades recreativas acuáticas
+    """)
 
-    st.markdown("**Descripción**: En este gráfico se puede visualizar que la distribucion de las edades tiene"
-                " una forma leptocurtica con un sesgo positivo, Además se observa que la mayoría"
-                " de edades se encuentran entre 20 y 24 años. Podemos concluir entonces que"
-                " la mayoría de personas que han sido atacadas son en su mayoría jovenes o adultos"
-                " jóvenes.")
+st.markdown("---")
 
+# 5. TEMPORADAS
+st.header("5. Análisis Estacional 📅")
 
-    st.header("5. Cantidad de Ataques Segun Temporada 🍃")
+col1, col2 = st.columns([3, 1])
+with col2:
+    cond_temp = st.checkbox("Condicionar por Fatalidad", key="temporada")
 
-    lab1, lab2 = st.tabs(["Temporada", "Temporada y Fatalidad"])
+with col1:
+    fig_temp = utilsg.grafico_temporada_interactivo(condicionar_fatalidad=cond_temp)
+    st.plotly_chart(fig_temp, use_container_width=True)
 
-    with lab1:
-        st.plotly_chart(utilsg.grafico_pie("season", True), key="9")
+# Interpretación condicional
+if cond_temp:
+    st.markdown("""
+    **Interpretación - Condicionado por Fatalidad:**
+    - **Verano**: Mayor proporción de fatalidades 
+    - **Invierno**: Mayor número de ataques pero menor tasa fatal
+    - **Otoño** y **Primavera**: Tasas intermedias de fatalidad
+    - Posible relación con especies migratorias y turismo
+    - En verano, mayor presencia de bañistas ocasionales
+    - En invierno, predominio de surfistas y deportistas experimentados
+    """)
+else:
+    st.markdown("""
+    **Interpretación:**
+    - **Invierno** (más ataques)
+    - **Otoño** (segundo lugar)
+    - **Verano** (tercer lugar)  
+    - **Primavera**  (menos ataques)
+    - Diferencias menores entre estaciones 
+    """)
 
-        st.markdown(f"**Descripción:** Se observan los porcentajes de"
-                    " los ataques según las estaciones del año. Como se puede ver en el gráfico,"
-                    " las proporciones de los ataques según la época del año son muy parecidas entre si, "
-                    " no existe mucha diferencia,"
-                    " Sin embargo es resaltable que la mayoría de"
-                    " ataques de tiburón suceden en el invierno (29.3%).")
-    with lab2:
-        hola = utilsg.grafico_barras("season", "is_fatal_cat", excluir=True)
-        st.plotly_chart(hola, key="1001")
-        st.markdown(f"**Descripción:** Se observan los porcentajes de"
-                    " los ataques según las estaciones del año y su fatalidad. Se puede ver en el gráfico que"
-                    " las proporciones de los ataques no fatales en su mayoría suceden en el invierno (23.76)"
-                    ". Así mismo se puede"
-                    " observar que la mayoría de ataques fatales ocurrieron durante el verano (6.12%), cuando las personas"
-                    " son más activas en las costas.")
-
-
-
-
-
-
-
-
-
-
-##Personalizar gráficos
-with tab2:
-    # Botones para pedir al usuario que gráfico quiere ver
-    kind_graph = st.selectbox("Ingrese el tipo de gráfico que quiere ver", ["Histograma", "Pie", "Caja y Bigote"])
-
-    # condicionales segun los graficos
-    if kind_graph == "Pie":
-        check = st.checkbox("Visibilidad de datos")
-        if check:
-            # Select box para el tipo de variable
-            left, right = st.columns(2)
-            columna = right.selectbox("Variable",
-                                      column2)
-            col = utilsg.formato(columna)
-            right.header("Tablas")
-            ##
-            tab = utils.analizar_frecuencias(df, col)
-            right.write(tab)
-            left.header("Visual")
-            left.write(utilsg.grafico_pie(col, True))
-        else:
-            columna = st.selectbox("Variable",
-                                   column2)
-            st.header("Visual")
-            col = utilsg.formato(columna)
-            st.write(utilsg.grafico_pie(col, True))
-
-    if kind_graph == "Histograma":
-        check = st.checkbox("Visibilidad de datos")
-        check2 = st.checkbox("Bivariante")
-        if check2:
-
-            if check:
-
-                # Creamos los espacios visuales
-                left, right = st.columns(2)
-
-                columna = left.selectbox("Variable 1", column2)
-
-                column1 = [x for x in column2 if x != columna]
-
-                columna2 = right.selectbox("Variable 2", column1)
-                col = utilsg.formato(columna)
-                col2 = utilsg.formato(columna2)
-                right.header("Tablas")
-                left.header("Visual")
-                left.write(utilsg.grafico_barras(col, col2, True))
-                ##Creación de variables para los graficos
-                tabla = utils.crear_tablas_doble_entrada(_df=df, fila=col, columna=col2)
-                tabla2 = utilsg.tabla_bivariante(df, col, col2, unk=True)
-                ##
-
-                le, ri = right.columns(2)
-                key = ri.button("Vertical ")
-                key2 = le.button("Contingencia")
-                if key:
-                    right.write(tabla2)
-                else:
-
-                    right.write(tabla["absoluta"])
-            else:
-                left, right = st.columns(2)
-
-                ### Remover los años cua
-                columna = left.selectbox("Variable 1", column2)
-
-                column1 = [x for x in column2 if x != columna]
-
-                columna2 = right.selectbox("Variable 2", column1)
-                col = utilsg.formato(columna)
-                col2 = utilsg.formato(columna2)
-                st.header("Visual")
-                st.write(utilsg.grafico_barras(col, col2, True))
-        else:
-            if check:
-
-                # Creamos los espacios visuales
-                left, right = st.columns(2)
-
-                ##variables de loss
-                columna = left.selectbox("Variable", column)
-
-                col = utilsg.formato(columna)
-
-                right.header("Tablas")
-                left.header("Visual")
-                left.write(utilsg.grafico_barras(col, columna2=None, excluir=True))
-                ##Creación de variables para los graficos
-                tabla = utils.analizar_frecuencias(df, col)
-                right.write(tabla)
-
-            else:
-                left, right = st.columns(2)
-                columna = left.selectbox("Variable", column)
-
-                col = utilsg.formato(columna)
-
-                st.header("Visual")
-                st.write(utilsg.grafico_barras(col, columna2=None, excluir=True))
-
-    if kind_graph == "Caja y Bigote":
-        left, right = st.columns(2)
-
-        columna = left.selectbox("Variable", column2)
-        left.header(f"Visual según edad y {columna}")
-        col = utilsg.formato(columna)
-        st.write(utilsg.grafico_caja(df, col))
-
-
-
-
+st.markdown("---")
+st.caption("Dashboard de Análisis de Ataques de Tiburón | Graficos")

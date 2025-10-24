@@ -1,477 +1,349 @@
-import utils
+# utilsg.py - Versión corregida
 import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
-import sqlite3
-import streamlit as st
-import pandas as pd
-import numpy as np
-from typing import Optional, Dict, Any
-import os
-from scipy import stats
-from PIL import Image
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from typing import Optional
+import utils
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-db_path = os.path.join(current_dir, "bbdd", "shark_attacks.db")
+# =============================================================================
+# CONFIGURACIÓN DE COLORES - PALETA MEJORADA
+# =============================================================================
 
-CONFIG = {
-    "base_de_datos": db_path,
-    "tabla_ataques": "shark_attackdatos",
-    "tabla_tiburones": "SHARKS",
-    "tabla_conservacion": "conservation_status"
+COLORES = {
+    'fatal': '#1f77b4',        # Azul oscuro para fatal
+    'no_fatal': '#aec7e8',     # Azul claro para no fatal
+    'principal': '#2E86AB',    # Azul principal
+    'edad': '#3498DB',         # AZUL BONITO para gráfico de edad no condicionado
+    'secundario': '#A3D5F7',   # Azul secundario
+    'acento': '#0066CC',       # Azul acento
+    'fondo': '#F0F8FF'         # Azul muy claro para fondo
 }
 
-FATAL_MAPPING = {
-    'Y': 'Fatal', 'YES': 'Fatal', '1': 'Fatal',
-    'N': 'No Fatal', 'NO': 'No Fatal', '0': 'No Fatal',
-    'NAN': 'Desconocido', 'NONE': 'Desconocido', 'UNKNOWN': 'Desconocido',
-    'DESCONOCIDO': 'Desconocido'
-}
+# Paletas para gráficos
+PALETA_AZULES = ['#1f77b4', '#aec7e8', '#6baed6', '#3182bd', '#08519c', '#d0d1e6', '#9ecae1', '#c6dbef']
+PALETA_SECUENCIAL = 'Blues'
 
-SEX_MAPPING = {
-    'M': 'Masculino', 'F': 'Femenino',
-    'N': 'Desconocido', 'NAN': 'Desconocido'
-}
+# =============================================================================
+# FUNCIONES DE GRÁFICOS MEJORADAS (REUTILIZANDO FUNCIONES DE utils.py)
+# =============================================================================
 
-UNKNOWN_VALUES = {'nan', 'none', 'unknown', 'desconocido', ''}
-
-
-def _conectar_bd() -> Optional[sqlite3.Connection]:
-    """
-    establece conexion con la base de datos sqlite
-    returns:
-        connection: objeto de conexion a la base de datos o none si hay error
-    """
-    try:
-        return sqlite3.connect(CONFIG["base_de_datos"])
-    except Exception as e:
-        st.error(f"error conectando a la base de datos: {e}")
-        return None
-
-
-@st.cache_data(show_spinner="cargando y limpiando datos...")
 def load_and_clean_data1() -> pd.DataFrame:
-    """
-    carga los datos desde la base de datos y realiza procesos de limpieza
-    returns:
-        dataframe: dataframe con los datos limpios o dataframe vacio si hay error
-    """
-    try:
-        conn = _conectar_bd()
-        if not conn:
-            return pd.DataFrame()
+    """Carga datos usando utils y añade transformaciones específicas para gráficos"""
+    df, _ = utils.cargar_datos_y_estadisticas()
+    
+    # Añadir transformaciones específicas para gráficos
+    # Limpieza y categorización de actividades
+    df['activity'] = df['activity'].astype(str).str.upper().str.strip()
+    
+    activity_mapping = {
+        'SURFING': 'Surfing', 'SURF': 'Surfing', 'SURFER': 'Surfing',
+        'BODYBOARDING': 'Bodyboarding', 'BODY BOARDING': 'Bodyboarding', 'BOOGIE BOARDING': 'Bodyboarding',
+        'FISHING': 'Pesca', 'FISHERMAN': 'Pesca', 'SPEARFISHING': 'Pesca',
+        'SWIMMING': 'Natación', 'SWIM': 'Natación', 'SWIMMER': 'Natación',
+        'PADDLE BOARDING': 'Paddle Boarding', 'STAND-UP PADDLE BOARDING': 'Paddle Boarding',
+        'DIVING': 'Buceo', 'SCUBA DIVING': 'Buceo', 'SNORKELING': 'Buceo',
+        'WADING': 'Vadeo', 'WADE FISHING': 'Vadeo',
+        'KAYAKING': 'Kayaking', 'CANOEING': 'Kayaking',
+        'SURF-SKIING': 'Surf-skiing', 'SURF SKIING': 'Surf-skiing',
+        'ROWING': 'Remo', 'ROWBOAT': 'Remo'
+    }
+    
+    df['activity_clean'] = df['activity'].map(activity_mapping)
+    df.loc[df['activity_clean'].isna(), 'activity_clean'] = 'Otras actividades'
+    
+    # Limpieza de temporadas
+    season_mapping = {
+        'WINTER': 'Invierno', 'SUMMER': 'Verano', 
+        'SPRING': 'Primavera', 'FALL': 'Otoño', 'AUTUMN': 'Otoño'
+    }
+    df['season_clean'] = df['season'].map(season_mapping).fillna('Desconocido')
+    
+    # Crear grupos de edad (igual que en Estadísticas Descriptivas)
+    bins = [0, 18, 30, 45, 60, 100]
+    labels = ['0-18', '19-30', '31-45', '46-60', '60+']
+    df['age_group'] = pd.cut(df['age'], bins=bins, labels=labels, right=False)
+    
+    return df
 
-        query = f"""
-        SELECT 
-            a.year,
-            a.is_fatal, 
-            a.activity, 
-            a.moon_phase, 
-            a.age, 
-            a.sex, 
-            a.season, 
-            a.day_part,
-            a.country, 
-            a.species,
-            s.conservation_status,
-            cs.cat as conservation_description
-        FROM {CONFIG['tabla_ataques']} a
-        LEFT JOIN {CONFIG['tabla_tiburones']} s ON a.species = s.id
-        LEFT JOIN {CONFIG['tabla_conservacion']} cs ON s.conservation_status = cs.id_long
-        """
-
-        df = pd.read_sql_query(query, conn)
-        conn.close()
-
-        if df.empty:
-            return df
-
-        df['is_fatal_cat'] = df['is_fatal'].map(FATAL_MAPPING).fillna('Desconocido')
-        df['sex'] = df['sex'].map(SEX_MAPPING).fillna('Desconocido')
-
-        df['activity'] = df['activity'].astype(str).str.upper().str.strip()
-        df.loc[df['activity'].str.upper().isin(UNKNOWN_VALUES), 'activity'] = 'Desconocido'
-        df.loc[df['activity'].isna(), 'activity'] = 'Desconocido'
-
-        df['moon_phase'] = df['moon_phase'].astype(str).str.upper().str.strip()
-        df.loc[df['moon_phase'].str.upper().isin(UNKNOWN_VALUES), 'moon_phase'] = 'Desconocido'
-        df.loc[df['moon_phase'].isna(), 'moon_phase'] = 'Desconocido'
-
-        df.loc[df['species'].isin(UNKNOWN_VALUES), 'species'] = 'Desconocido'
-        df.loc[df['species'].isna(), 'species'] = 'Desconocido'
-
-        df['season'] = df['season'].astype(str).str.upper().str.strip()
-        df.loc[df['season'].str.upper().isin(UNKNOWN_VALUES), 'season'] = 'Desconocido'
-        df.loc[df['season'].isna(), 'season'] = 'Desconocido'
-
-        df['day_part'] = df['day_part'].astype(str).str.upper().str.strip()
-        df.loc[df['day_part'].str.upper().isin(UNKNOWN_VALUES), 'day_part'] = 'Desconocido'
-        df.loc[df['day_part'].isna(), 'day_part'] = 'Desconocido'
-
-        df['age'] = pd.to_numeric(df['age'], errors='coerce')
-        df['age'] = df['age'].apply(lambda x: x if pd.notna(x) and 0 <= x <= 100 else np.nan)
-
-        return df
-
-    except Exception as e:
-        st.error(f"error critico en carga de datos: {e}")
-        return pd.DataFrame()
-
-def grafico_pie(columna: str, excluir: bool = False) :
-
-    """ Genera un gráfico de pie según las proporciones de las columnas de la
-    Parameters:
-        columna (str): columna de tablas
-        excluir (bool, optional): decidir si se excluyen valores desconocidos
-
-    """
-
-    ##Cargar el dataframe.
-
+def grafico_fatalidad_interactivo() -> go.Figure:
+    """Gráfico circular interactivo para fatalidad usando datos de utils"""
     df = load_and_clean_data1()
+    
+    # Usar analizar_frecuencias de utils para obtener datos consistentes
+    tabla_fatalidad = utils.analizar_frecuencias(df, 'is_fatal_cat', excluir_desconocido=True)
+    
+    # Filtrar solo datos conocidos de fatalidad
+    fatal_data = tabla_fatalidad[tabla_fatalidad['Categoria'].isin(['Fatal', 'No Fatal'])]
+    
+    # Calcular porcentajes para mostrar en etiquetas
+    total = fatal_data['Frecuencia Absoluta'].sum()
+    fatal_data = fatal_data.copy()
+    fatal_data['Porcentaje'] = (fatal_data['Frecuencia Absoluta'] / total * 100).round(1)
+    fatal_data['Etiqueta'] = fatal_data['Categoria'] + '<br>' + fatal_data['Porcentaje'].astype(str) + '%'
+    
+    fig = go.Figure(data=[
+        go.Pie(
+            labels=fatal_data['Etiqueta'],
+            values=fatal_data['Frecuencia Absoluta'],
+            hole=0.4,
+            marker=dict(colors=[COLORES['fatal'], COLORES['no_fatal']]),
+            textinfo='label',
+            hovertemplate='<b>%{label}</b><br>%{value} casos<extra></extra>',
+            textposition='inside',
+            textfont=dict(size=14)
+        )
+    ])
+    
+    fig.update_layout(
+        title_text="Distribución de Fatalidad en Ataques de Tiburón",
+        showlegend=False,
+        annotations=[dict(text=f'Total:<br>{total}', x=0.5, y=0.5, font_size=14, showarrow=False)]
+    )
+    
+    return fig
 
-    ##Analizar frecuencias de los fatales
-    df_grafico = utils.analizar_frecuencias(df, columna, excluir)
-    #print(df_fatals.head())
-
-    ##Condicionar titulos para el gráfico de pie según las variables
-    if columna == "activity":
-        title = "Proporcion de ataques según actividad"
-    elif columna == "is_fatal_cat":
-        title = "Proporción de ataques según fatalidad"
-    elif columna == "season":
-        title = "Proporción de ataques según Temporada"
-    elif columna == "sex":
-        title = "Proporción de ataques según sexo de las víctimas"
-    elif columna == "species":
-        title = "Proporción de ataques según la Especie de Tiburón"
-    elif columna == "day_part":
-        title = "Proporción de ataques según el horario"
-    elif columna == "country":
-            title ="Proporción de ataques según el País"
-
-
-    ## Construcción del gráfico
-    pie_grafico = px.pie(df_grafico, values='Frecuencia Relativa', names='Categoria',
-                  title=title)
-    return pie_grafico
-
-#Cambiar el formato del string columna para que sea legible por la funcion de graficos de pie
-def formato(columna):
-    """Formatea la entrada del back end de las
-    variables de la selección en variables que la funcion de gráfico
-    de pie pueda leer
-    """
-
-    if columna == "Tipo de Actividad":
-        columna = "activity"
-        return columna
-    elif columna == "Fatalidad":
-        columna = "is_fatal_cat"
-        return columna
-    elif columna == "Temporada":
-        columna = "season"
-        return columna
-    elif columna == "Sexo":
-        columna = "sex"
-        return columna
-    elif columna == "Especie de Tiburón":
-        columna = "species"
-        return columna
-    elif columna == "AM,PM":
-        columna = "day_part"
-        return columna
-    elif columna == "Década":
-        columna = "decada"
-        return columna
-    elif columna == "Año":
-        columna = "year"
-        return columna
-    elif columna == "País":
-        columna = "country"
-        return columna
-    else:
-        pass
-
-###Gráfico de barras
-def grafico_barras(columna: str, columna2: Optional[str] = None, excluir: bool = False):
-    """ Genera un gráfico de barras según las proporciones de las columnas elegidas
-    Parameters:
-        columna (str): columna de tablas
-        excluir (bool, optional): decidir si se excluyen valores desconocidos
-        bi: gráfico de barras bivariante
-
-    """
-    ##Cargar base de datos
+def grafico_actividad_interactivo(condicionar_fatalidad: bool = False) -> go.Figure:
+    """Gráfico de actividades usando tablas de utils"""
     df = load_and_clean_data1()
-
-    if columna2 != None:
-
-
-        ##Analizar frecuencias de los fatales
-
-        frecuencia = tabla_bivariante(df, columna, columna2, excluir)
-        frecuencia2 = utils.analizar_frecuencias(df, columna, excluir)
-
-        ##Condicionar titulos para el gráfico de pie según las variables
-        if columna == "activity":
-            title = "Proporcion de ataques según actividad"
-        elif columna == "is_fatal_cat":
-            title = "Proporción de ataques según fatalidad"
-        elif columna == "year":
-            title = "Cantidad de ataques según el año"
-        elif columna == "season":
-            title = "Proporción de ataques según Temporada"
-        elif columna == "sex":
-            title = "Proporción de ataques según sexo de las víctimas"
-        elif columna == "species":
-            title = "Proporción de ataques según la Especie de Tiburón"
-        elif columna == "day_part":
-            title = "Proporción de ataques según el horario"
-        elif columna == "country":
-            title ="Proporción de ataques según el País"
-
-        ## Construcción del gráfico
-        if columna2 == None:
-            fig = px.bar(frecuencia2, x=columna, y='Frecuencia Relativa %', title=title)
-            return fig
-
-        else:
-            fig = px.bar(frecuencia, x=columna, y='Frecuencia Relativa %', color=columna2, title=title)
-            return fig
+    
+    if condicionar_fatalidad:
+        # Usar crear_tablas_doble_entrada de utils para datos consistentes
+        tablas = utils.crear_tablas_doble_entrada(df, 'activity_clean', 'is_fatal_cat')
+        
+        if not tablas:
+            return go.Figure()
+        
+        tabla_absoluta = tablas['absoluta']
+        # Quitar totales y tomar top actividades
+        tabla_absoluta = tabla_absoluta.drop('Total', axis=0).drop('Total', axis=1)
+        top_activities = tabla_absoluta.sum(axis=1).nlargest(8).index
+        tabla_absoluta = tabla_absoluta.loc[top_activities]
+        
+        # Calcular porcentajes para el tooltip
+        total_por_actividad = tabla_absoluta.sum(axis=1)
+        
+        fig = go.Figure()
+        
+        for fatal_type in ['Fatal', 'No Fatal']:
+            if fatal_type in tabla_absoluta.columns:
+                color = COLORES['fatal'] if fatal_type == 'Fatal' else COLORES['no_fatal']
+                porcentajes = (tabla_absoluta[fatal_type] / total_por_actividad * 100).round(1)
+                
+                fig.add_trace(go.Bar(
+                    name=fatal_type,
+                    x=tabla_absoluta.index,
+                    y=tabla_absoluta[fatal_type],
+                    marker_color=color,
+                    text=tabla_absoluta[fatal_type].astype(str) + '<br>(' + porcentajes.astype(str) + '%)',
+                    textposition='auto',
+                    hovertemplate=f'<b>%{{x}}</b><br>{fatal_type}: %{{y}} casos<extra></extra>'
+                ))
+        
+        fig.update_layout(
+            title="Actividades más Comunes - Condicionado por Fatalidad",
+            xaxis_title="Actividad",
+            yaxis_title="Número de Ataques",
+            barmode='group',
+            showlegend=True
+        )
     else:
-        frecuencia = utils.analizar_frecuencias(df, columna, excluir)
+        # Usar analizar_frecuencias de utils para datos consistentes
+        tabla_actividad = utils.analizar_frecuencias(df, 'activity_clean', excluir_desconocido=True)
+        top_actividades = tabla_actividad.head(8)
+        
+        fig = px.bar(
+            top_actividades,
+            x='Categoria',
+            y='Frecuencia Absoluta',
+            title="Actividades más Comunes en Ataques de Tiburón",
+            labels={'Categoria': 'Actividad', 'Frecuencia Absoluta': 'Número de Ataques'},
+            color='Frecuencia Absoluta',
+            color_continuous_scale=PALETA_SECUENCIAL,
+            text='Frecuencia Relativa %'  # Mostrar porcentajes en barras
+        )
+        
+        # Mejorar el formato de las etiquetas
+        fig.update_traces(
+            texttemplate='%{y}<br>(%{text}%)',
+            textposition='outside'
+        )
+    
+    return fig
 
-        ##Condicionar titulos para el gráfico de pie según las variables
-        if columna == "activity":
-            title = "Porcentaje de ataques según actividad"
-        elif columna == "is_fatal_cat":
-            title = "Porcentaje de ataques según fatalidad"
-        elif columna == "year":
-            title = "Porcentaje de ataques según el año"
-        elif columna == "season":
-            title = "Porcentaje de ataques según Temporada"
-        elif columna == "sex":
-            title = "Porcentaje de ataques según sexo de las víctimas"
-        elif columna == "species":
-            title = "Porcentaje de ataques según la Especie de Tiburón"
-        elif columna == "day_part":
-            title = "Porcentaje de ataques según el horario"
-        elif columna == "country":
-            title ="Proporción de ataques según el País"
-
-        ## Construcción del gráfico
-        fig = px.bar(frecuencia, x='Categoria', y='Frecuencia Relativa %', title=title)
-        return fig
-
-def grafico_caja(_df,columna, excluir: bool= True):
-    """
-    Permite hacer un gráfico de cága según alguna varibale cualquiera
-    """
-    a = columna
-
-    if excluir:
-        df = _df.loc[_df[a] != "Desconocido", ["age", a]]
-
-        fig = px.box(df, x=a, y="age", color = a, points= False)
-
-        return fig
-    else:
-        fig = px.box(_df, x=a, y="age", points= False)
-
-
-
-
-###Tabla bivariante vertical
-def tabla_bivariante(_df: pd.DataFrame, species: str, is_fatal_cat: str, unk: bool):
-    """Crea una tabla bivariante vertical que permite hacer gráficos de barras agrupados
-    Parámetros:
-    _df: dataframe
-    species: variable 1
-    is_fatal_cat: variable 2
-    unk: True = Descartar valores "Desconocidos"
-    """
-
-    if unk:
-        df = _df[(_df[species] != "Desconocido") & (_df[is_fatal_cat] != "Desconocido")].copy()
-    else:
-        df = _df
-
-    a = df[species].value_counts()
-    list = a.index
-    # lista de la segunda varible
-    c = df[is_fatal_cat].value_counts()
-    list2 = c.index
-
-    # Nuevo DataFrame
-
-    # lista de dataframe
-
-    # Revisa cada fila
-    for x in list:
-        # Revisa una columna por cada fila
-        for y in list2:
-            # filtramos
-            b = df.loc[(df[species] == x) & (df[is_fatal_cat] == y), species].value_counts()
-            # revisamos si es el inicio del programa (primera celda)
-            if y == list2[0] and x == list[0]:
-
-                if not b.empty:
-                    b1 = b.index
-                    b2 = b.values
-                    data = pd.DataFrame({
-                        species: [b1[0]]})
-                    data2 = pd.DataFrame({
-                        is_fatal_cat: [y]})
-                    data3 = pd.DataFrame({
-                        "count": [b2[0]]
-                        })
-                    data6 = pd.DataFrame({
-                        'Frecuencia Relativa %': [b2[0] / len(df) * 100]
-                    })
-                    data = pd.concat([data, data2, data3,data6], axis=1)
-
-                else:
-                    data = pd.DataFrame({
-                        species: [x]})
-                    data2 = pd.DataFrame({
-                        is_fatal_cat: [y]})
-                    data3 = pd.DataFrame({
-                        "count": [0]})
-
-                    data6 = pd.DataFrame({
-                        'Frecuencia Relativa %': [0 / len(df) * 100]
-                    })
-
-                    data = pd.concat([data, data2, data3, data6], axis=1)
-
-
-            else:
-                if not b.empty:
-                    b1 = b.index
-                    b2 = b.values
-                    data1 = pd.DataFrame({
-                        species: [b1[0]]})
-                    data2 = pd.DataFrame({
-                        is_fatal_cat: [y]})
-                    data3 = pd.DataFrame({
-                        "count": [b2[0]]
-                    })
-                    data6 = pd.DataFrame({
-                        'Frecuencia Relativa %': [b2[0] / len(df) * 100]
-                    })
-
-
-                    data4 = pd.concat([data1, data2, data3, data6], axis=1)
-
-                    data = pd.concat([data4, data], axis=0)
-                else:
-                    data1 = pd.DataFrame({
-                        species: [x]})
-                    data2 = pd.DataFrame({
-                        is_fatal_cat: [y]})
-                    data3 = pd.DataFrame({
-                        "count": [0]})
-                    data6 = pd.DataFrame({
-                        'Frecuencia Relativa %': [0 / len(df) * 100]
-                    })
-
-                    data4 = pd.concat([data1, data2, data3, data6], axis=1)
-
-                    data = pd.concat([data4, data], axis=0)
-
-    return data
-
-
-def grafico_barras_paises(columna: str, columna2: str = None, number: int = 10, excluir: bool = False):
-    """ Genera un gráfico de barras según las proporciones de las columnas elegidas
-    Parameters:
-        columna (str): columna de tablas
-        excluir (bool, optional): decidir si se excluyen valores desconocidos
-        bi: gráfico de barras bivariante
-
-    """
-    ##Cargar base de datos
+def grafico_edad_interactivo(condicionar_fatalidad: bool = False) -> go.Figure:
+    """Gráfico de distribución de edad"""
     df = load_and_clean_data1()
-
-    if columna2 != None:
-
-
-        ##Analizar frecuencias de los fatales
-
-        frecuencia = tabla_bivariante(df, columna, columna2, excluir)
-        frecuencia2 = utils.analizar_frecuencias(df, columna, excluir)
-
-        ##Condicionar titulos para el gráfico de pie según las variables
-        if columna == "activity":
-            title = "Proporcion de ataques según actividad"
-        elif columna == "is_fatal_cat":
-            title = "Proporción de ataques según fatalidad"
-        elif columna == "year":
-            title = "Cantidad de ataques según el año"
-        elif columna == "season":
-            title = "Proporción de ataques según Temporada"
-        elif columna == "sex":
-            title = "Proporción de ataques según sexo de las víctimas"
-        elif columna == "species":
-            title = "Proporción de ataques según la Especie de Tiburón"
-        elif columna == "day_part":
-            title = "Proporción de ataques según el horario"
-        elif columna == "country":
-            title ="Proporción de ataques según el País"
-
-        ## Construcción del gráfico
-        if columna2 == None:
-            fig = px.bar(frecuencia2, x=columna, y='Frecuencia Relativa %', title=title)
-            return fig
-
-        else:
-            fig = px.bar(frecuencia, x=columna, y='Frecuencia Relativa %', color=columna2, title=title)
-            return fig
+    
+    # Filtrar edades válidas
+    age_data = df[df['age'].notna()]
+    
+    if condicionar_fatalidad:
+        # Filtrar solo Fatal y No Fatal
+        age_data = age_data[age_data['is_fatal_cat'].isin(['Fatal', 'No Fatal'])]
+        
+        fig = px.histogram(
+            age_data,
+            x='age',
+            color='is_fatal_cat',
+            nbins=20,
+            barmode='overlay',
+            opacity=0.7,
+            color_discrete_map={'Fatal': COLORES['fatal'], 'No Fatal': COLORES['no_fatal']},
+            title="Distribución de Edad - Condicionado por Fatalidad"
+        )
+        
+        fig.update_layout(
+            xaxis_title="Edad (años)",
+            yaxis_title="Número de Ataques",
+            legend_title="Fatalidad"
+        )
     else:
-        frecuencia = utils.analizar_frecuencias(df, columna, excluir)
+        # Usar color VERDE para el gráfico no condicionado
+        fig = px.histogram(
+            age_data,
+            x='age',
+            nbins=20,
+            title="Distribución de Edad de las Víctimas",
+            labels={'age': 'Edad (años)', 'count': 'Número de Ataques'},
+            color_discrete_sequence=[COLORES['edad']]  # VERDE para edad no condicionada
+        )
+        
+        # Añadir línea de media usando estadísticas de utils
+        mean_age = age_data['age'].mean()
+        fig.add_vline(x=mean_age, line_dash="dash", line_color=COLORES['acento'], 
+                     annotation_text=f"Media: {mean_age:.1f} años")
+    
+    return fig
 
-
-        ##Condicionar titulos para el gráfico de pie según las variables
-        if columna == "activity":
-            title = "Porcentaje de ataques según actividad"
-        elif columna == "is_fatal_cat":
-            title = "Porcentaje de ataques según fatalidad"
-        elif columna == "year":
-            title = "Porcentaje de ataques según el año"
-        elif columna == "season":
-            title = "Porcentaje de ataques según Temporada"
-        elif columna == "sex":
-            title = "Porcentaje de ataques según sexo de las víctimas"
-        elif columna == "species":
-            title = "Porcentaje de ataques según la Especie de Tiburón"
-        elif columna == "day_part":
-            title = "Porcentaje de ataques según el horario"
-        elif columna == "country":
-            title ="Proporción de ataques según el País"
-
-        ## Construcción del gráfico
-        fig = px.bar(frecuencia.head(number), x='Categoria', y='Frecuencia Relativa %', title=title)
-        return fig
-
-def histograma_edad(columna: str, valor: str, number: int = 7):
-    """
-
-    :param columna: columna del valor para agrupar
-    :param valor:  valor para agrupar
-    :param number: cantidad de barras en el gráfico
-
-    """
-    if not columna != None and valor != None:
-        df = load_and_clean_data1()
-        df1 = df[df[columna] == valor].copy
-
-        fig = px.histogram(df1, x="age", nbins= number)
-
-        return fig
+def grafico_grupo_edad_interactivo(condicionar_fatalidad: bool = False) -> go.Figure:
+    """Gráfico de grupos de edad usando funciones de utils"""
+    df = load_and_clean_data1()
+    
+    if condicionar_fatalidad:
+        # Usar crear_tablas_doble_entrada de utils
+        tablas = utils.crear_tablas_doble_entrada(df, 'age_group', 'is_fatal_cat')
+        
+        if not tablas:
+            return go.Figure()
+        
+        tabla_absoluta = tablas['absoluta']
+        tabla_absoluta = tabla_absoluta.drop('Total', axis=0).drop('Total', axis=1)
+        
+        # Calcular porcentajes para cada grupo
+        total_por_grupo = tabla_absoluta.sum(axis=1)
+        
+        fig = go.Figure()
+        
+        for fatal_type in ['Fatal', 'No Fatal']:
+            if fatal_type in tabla_absoluta.columns:
+                color = COLORES['fatal'] if fatal_type == 'Fatal' else COLORES['no_fatal']
+                porcentajes = (tabla_absoluta[fatal_type] / total_por_grupo * 100).round(1)
+                
+                fig.add_trace(go.Bar(
+                    name=fatal_type,
+                    x=tabla_absoluta.index,
+                    y=tabla_absoluta[fatal_type],
+                    marker_color=color,
+                    text=tabla_absoluta[fatal_type].astype(str) + '<br>(' + porcentajes.astype(str) + '%)',
+                    textposition='auto',
+                    hovertemplate=f'<b>%{{x}}</b><br>{fatal_type}: %{{y}} casos<extra></extra>'
+                ))
+        
+        fig.update_layout(
+            title="Grupos de Edad - Condicionado por Fatalidad",
+            xaxis_title="Grupo de Edad",
+            yaxis_title="Número de Ataques",
+            barmode='group',
+            showlegend=True
+        )
     else:
-        df = load_and_clean_data1()
-        fig = px.histogram(df, x="age", nbins= number)
-        return fig
+        # Usar analizar_frecuencias de utils
+        tabla_edad = utils.analizar_frecuencias(df, 'age_group', excluir_desconocido=True)
+        
+        fig = px.bar(
+            tabla_edad,
+            x='Categoria',
+            y='Frecuencia Absoluta',
+            title="Distribución de Ataques por Grupo de Edad",
+            labels={'Categoria': 'Grupo de Edad', 'Frecuencia Absoluta': 'Número de Ataques'},
+            color='Frecuencia Absoluta',
+            color_continuous_scale=PALETA_SECUENCIAL,
+            text='Frecuencia Relativa %'  # Mostrar porcentajes en barras
+        )
+        
+        # Mejorar el formato de las etiquetas
+        fig.update_traces(
+            texttemplate='%{y}<br>(%{text}%)',
+            textposition='outside'
+        )
+    
+    return fig
 
+def grafico_temporada_interactivo(condicionar_fatalidad: bool = False) -> go.Figure:
+    """Gráfico de temporadas usando funciones de utils"""
+    df = load_and_clean_data1()
+    
+    if condicionar_fatalidad:
+        # Usar crear_tablas_doble_entrada de utils
+        tablas = utils.crear_tablas_doble_entrada(df, 'season_clean', 'is_fatal_cat')
+        
+        if not tablas:
+            return go.Figure()
+        
+        tabla_absoluta = tablas['absoluta']
+        tabla_absoluta = tabla_absoluta.drop('Total', axis=0).drop('Total', axis=1)
+        
+        # Calcular porcentajes para cada temporada
+        total_por_temporada = tabla_absoluta.sum(axis=1)
+        
+        fig = go.Figure()
+        
+        for fatal_type in ['Fatal', 'No Fatal']:
+            if fatal_type in tabla_absoluta.columns:
+                color = COLORES['fatal'] if fatal_type == 'Fatal' else COLORES['no_fatal']
+                porcentajes = (tabla_absoluta[fatal_type] / total_por_temporada * 100).round(1)
+                
+                fig.add_trace(go.Bar(
+                    name=fatal_type,
+                    x=tabla_absoluta.index,
+                    y=tabla_absoluta[fatal_type],
+                    marker_color=color,
+                    text=tabla_absoluta[fatal_type].astype(str) + '<br>(' + porcentajes.astype(str) + '%)',
+                    textposition='auto',
+                    hovertemplate=f'<b>%{{x}}</b><br>{fatal_type}: %{{y}} casos<extra></extra>'
+                ))
+        
+        fig.update_layout(
+            title="Ataques por Temporada - Condicionado por Fatalidad",
+            xaxis_title="Temporada",
+            yaxis_title="Número de Ataques",
+            barmode='group',
+            showlegend=True,
+            xaxis={'categoryorder': 'array', 'categoryarray': ['Primavera', 'Verano', 'Otoño', 'Invierno']}
+        )
+    else:
+        # Usar analizar_frecuencias de utils
+        tabla_temporada = utils.analizar_frecuencias(df, 'season_clean', excluir_desconocido=True)
+        
+        fig = px.bar(
+            tabla_temporada,
+            x='Categoria',
+            y='Frecuencia Absoluta',
+            title="Distribución de Ataques por Temporada",
+            labels={'Categoria': 'Temporada', 'Frecuencia Absoluta': 'Número de Ataques'},
+            color='Frecuencia Absoluta',
+            color_continuous_scale=PALETA_SECUENCIAL,
+            text='Frecuencia Relativa %',  # Mostrar porcentajes en barras
+            category_orders={'Categoria': ['Primavera', 'Verano', 'Otoño', 'Invierno']}
+        )
+        
+        # Mejorar el formato de las etiquetas
+        fig.update_traces(
+            texttemplate='%{y}<br>(%{text}%)',
+            textposition='outside'
+        )
+    
+    return fig
