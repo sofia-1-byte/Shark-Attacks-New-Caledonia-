@@ -84,12 +84,12 @@ st.markdown("""
     
     Las actividades más realizadas antes de sufrir un ataque de tiburón son: surfear, con 1069 incidentes; bodyboarding, con 976 incidentes y pescar, con 864 incidentes.
 
-    Por otra parte, las actividades menos comunes al sufrir un ataque de tiburón son: flotar en el agua, con 14 incidentes; remar, con 13 incidentes y el suceso que menos ocurre durante ataques de tiburones es caerse de la borda de una embarcación, con solo 4 ataques registrados.
+    Si condicionamos la tabla de actividades por fatalidad podemos observar que la actividad más mortal es nadar, con 324 encuentros (6,48% de los ataques totales). A este le siguen: bodyboarding, con 313 víctimas fatales (6,26%), y pescar, con 164 fatalidades (3,28%). En cambio, las actividades menos fatales son remar, surfskiing y boogie boarding, con 0, 0 y 2 ataques fatales respectivamente, representando solo el 0,04% de los ataques totales.
 
-    Si condicionamos la tabla de actividades por fatalidad podemos observar que la actividad más mortal es nadar, con 324 encuentros (6,48% de los ataques totales). A este le siguen: bodyboarding, con 313 víctimas fatales (6,26%), y pescar, con 164 fatalidades (3,28%). 
+    Si miramos la tabla condicionada en porcentaje por fila, las actividades más mortales son: caer a bordo de una embarcación (con un 75% de fatalidad),  bañarse (42,42% de fatalidad) y nadar (37,5% de fatalidad). Mientras que, las actividades menos fatales son remar (100% de no ser fatal),  el surf skiing (con otro 100% de no fatalidad) y el boogie boarding (95% de no ser fatal).
 
-    En cambio, las actividades menos fatales son remar, surfskiing y boogie boarding, con 0, 0 y 2 ataques fatales respectivamente, representando solo el 0,04% de los ataques totales.
-        
+    Si se usa la función de porcentaje por columnas, se puede apreciar que de los ataques fatales, los más mortales son: nadar (29,48%),  el bodyboarding (28,48%) y pescar (14,92%). Por su parte, la mayoría de los ataques no letales son por parte de: surfear (25,6%), pescar (20,76%) y del bodyboarding (16,99%).
+
     Podemos decir que la mayoría de ataques se producen al realizar actividades que requieran estar mucho tiempo en el agua y que hacen que el tiburón confunde a la persona con una presa. En el caso de la pesca se puede deber a la atracción del tiburón buscando alguna presa.
 
     
@@ -136,6 +136,10 @@ st.markdown("""
     En cambio, los países con menos ataques registrados suelen tener climas no favorables para la mayoría de especies de tiburones causantes de ataques, además de tener un bajo número de población tanto en el territorio total como en las costas. La mayoría de países que se encuentran en esta situación poseen climas fríos como Islandia o las islas Británicas, no poseen grandes líneas costeras como Líbano o países de la península de los Balcanes, o simplemente son países que no poseen gran actividad en los océanos.
 
     Al condicionar esta variable con la de fatalidad, se puede apreciar que el país con mayor cantidad de ataques mortales es Australia, con 245 ataques (4,9% del total); seguido están Estados Unidos y Sudáfrica, con 188 (3,76%) y 110 (2,2%) ataques respectivamente.
+
+    Cuando colocamos la opción de porcentaje por filas, se puede ver que en un gran número de países y/o territorios como pueden ser Samoa Americana, Aruba y Bangladesh, la fatalidad de los ataques de tiburones es del 100%. Mientras que, en otros lugares como Argentina, las islas Azores o Canadá, se puede apreciar que la tasa de ataques no fatales es del 100%.
+
+    Si se coloca la opción de porcentaje por columnas, se observa que los países con la mayor cantidad de ataques letales son: Australia (22,29 % de todos los ataques fatales), EE UU (17,11%) y Sudáfrica (10,01%).  De igual manera, los países que acaparan la mayor cantidad de ataques no fatales son: EE UU (44,82%), Australia (20,53%) y Sudáfrica (10,4%).
 
             
     </div>
@@ -195,7 +199,11 @@ st.markdown("""
 
  Si se condiciona esta variable con la de fatalidad, se puede visualizar que los grupos de edad con mayor cantidad de ataques fatales son: de 19 a 30 años con 424 ataques (8,48% del total de ataques), 31 a 45 años con 197 ataques (3,94%), 0 a 18 años con 186 ataques (3,72%), 46 a 60 años con 155 ataques (3,1%), y los mayores de 60 años con 137 ataques registrados como mortales (2,74%).
 
+ Si se ve en porcentaje por filas, la tasa de mortalidad de cada grupo es la siguiente; el 26,71% de los ataques al grupo de mayores de 60 años son fatales, el 23,17% al grupo de 46 a 60 años, el 22,91% a los de entre 19 a 30 años, el 20,91% al grupo de 31 a 45 años, y por último, un 18,13% al grupo de las personas entre 0 a 18 años.
 
+ En porcentaje por columnas, se puede observar que los ataques fatales se encuentran repartidos así: 38,58% de parte del grupo de 19 a 30 años, un 17,93% del grupo de 31 a 45 años, un 16,92% del grupo de 0 a 18 años, un 14,1% del grupo de 46 a 60 años, y un 12,47% de parte del grupo de mayores de 60 años. Si hablamos de los ataques no fatales, se puede ver que de estos, el 36,57% pertenece al grupo de víctimas de entre 19 a 30 años (siendo la gran mayoría), el 19,09% son del grupo de 31 a 45 años, 21,53% representa al grupo de 0 a 18 años, el 13,17% al grupo de de 46 a 60 años, y por ultimo, solo un 9,64% son del grupo de mayores de 60 años
+
+            
 </div>
 """, unsafe_allow_html=True)
 
@@ -239,6 +247,10 @@ st.markdown("""
     Después del invierno, las estaciones con más ataques registrados son otoño y verano, siendo primavera la estación con menos ataques registrados.
             
     Cuando se condiciona esta variable con la variable de fatalidad, podemos ver que la estación con mayor cantidad de ataques de tiburones con resultados fatales es el verano, con 306 ataques registrados (un 6,12 % del total). Las demás estaciones en orden de ataques fatales son: otoño con 289 ataques (4,52%), invierno con 278 ataques (5,56%) y por último primavera, con 226 ataques mortales (4,52%).
+        
+    Al usar la opción de porcentaje por fila, se puede apreciar que la mortalidad de cada temporada es la siguiente: el verano es la temporada más fatal, con un 26,42% de mortalidad, le sigue el otoño, con 23,63% de mortalidad, luego la primavera, con 19,58% de fatalidad, y por ultimo esta el invierno, con un 18,96% de fatalidad.
+
+    En porcentaje por columna, se observa que de los ataques fatales, un 27,84% de ellos corresponden a los ocurridos en verano, 26,3% a los de otoño, un 25,3% a los de invierno y un 20,56% a los de primavera. Del otro extremo, de los ataques no fatales, un 30,45% son de la estación de invierno, 23,94% de otoño, un 23,78% de primavera, y un 21,83% de estos ataques ocurren en el verano.
         
     
     </div>
