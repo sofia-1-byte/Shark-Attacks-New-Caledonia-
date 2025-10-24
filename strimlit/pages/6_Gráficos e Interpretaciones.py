@@ -6,7 +6,7 @@ import utilsg
 import stilez 
 
 st.set_page_config(
-    page_title="Graficos, Visuales e Interpretación de los datos 📊",
+    page_title="Graficos e Interpretación de los datos 📊",
     page_icon="🦈",
     layout="wide")
 
@@ -20,7 +20,7 @@ df = utilsg.load_and_clean_data1()
 stilez.aplicar_estilos_globales()
 
 # titulo principal
-st.title("Visuales e Interpretación 📊")
+st.title("Gráficos e Interpretaciones 📊")
 
 ##Realizamos una página por definición y otra personalizable
 tab1, tab2 = st.tabs([
