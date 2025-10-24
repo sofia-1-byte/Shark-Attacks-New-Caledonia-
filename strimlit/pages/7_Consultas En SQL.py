@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import utils
 import os
 import stilez 
 import utilsql 
@@ -150,7 +149,7 @@ with col1:
 
 with col2:
     # obtener datos para metricas
-    df_estaciones = utils.obtener_ataques_por_estacion()
+    df_estaciones = utilsql.obtener_ataques_por_estacion()
     total_estaciones = len(df_estaciones) if not df_estaciones.empty else 0
     st.metric(
         "Estaciones analizadas", 
@@ -159,7 +158,7 @@ with col2:
     )
 
 with col3:
-    df_especies = utils.obtener_especies_conservacion()
+    df_especies = utilsql.obtener_especies_conservacion()
     total_especies = len(df_especies) if not df_especies.empty else 0
     st.metric(
         "Especies identificadas", 
