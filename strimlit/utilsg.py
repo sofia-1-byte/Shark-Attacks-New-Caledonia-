@@ -13,7 +13,8 @@ COLORES = {
     'principal': '#2E86AB',    
     'edad': '#3498DB',         
     'secundario': '#A3D5F7',   
-    'fondo': '#F0F8FF'        
+    'fondo': '#F0F8FF',
+    'acento': "#1D6DD4"  
 }
 
 # Paletas para gráficos
