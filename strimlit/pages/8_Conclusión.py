@@ -23,7 +23,7 @@ En el presente capitulo se pretende exponer las conclusiones obtenidas en la inv
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("#### Analizar la letalidad de los ataques para establecer la proporción porcentual exacta de incidentes clasificados como fatales (is_fatal = Y) dentro del total de registros.")
+st.markdown("#### Investigar la tasa global de fatalidad para establecer la proporción de ataques mortales.")
 
 st.markdown("""
 <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
@@ -48,7 +48,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("#### Delimitar la concentración geográfica de los incidentes para visualizar y rankear los países (country) que registran la más alta frecuencia de ataques.")
+st.markdown("#### Examinar los países para ubicar los de mayor incidencia y su distribución de casos fatales.")
 
 st.markdown("""
 <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
@@ -62,7 +62,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("#### Caracterizar el perfil de la víctima mediante el cálculo de la media y la mediana de la edad y la distribución de frecuencias.")
+st.markdown("#### Examinar la distribución por grupos de edad para identificar patrones de vulnerabilidad según la fatalidad.")
 
 st.markdown("""
 <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
@@ -77,7 +77,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("####     Establecer la distribución temporal de los ataques a través del análisis de frecuencias agrupadas por estación (season), buscando patrones de ocurrencia.")
+st.markdown("####     Evaluar las estaciones del año para determinar las más peligrosas y su asociación con la fatalidad.")
 
 st.markdown("""
 <div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
@@ -100,6 +100,22 @@ st.markdown("""
 •	Conclusión: Existe una gran disparidad de proporción de fatalidad entre las actividades, por ejemplo, actividades percibidas generalmente como menos riesgosas como bañarse o nadar presentan una alta tasa de fatalidad con 42,4% y 37,5% respectivamente. Sin embargo, actividades como surfear la actividad con más incidentes reportados presenta una tasa de fatalidad de las más bajas con 6,55% lo que descarta una correlación entre la frecuencia de un incidente y su letalidad.
 
 •	Recomendación: Enfocar la prevención en las actividades con mayor riesgo como bañarse y nadar, ya que son actividades comunes con alta fatalidad.
+
+
+
+
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("####     Examinar la relación entre variables y fatalidad para analizar cómo la actividad, país, edad y estación se asocian con la letalidad de los incidentes mediante tablas de contingencia.")
+
+st.markdown("""
+<div style='text-align: justify; line-height: 1.6; font-size: 16px;'>
+    
+•	Conclusión: Confirmamos que la actividad más mortal fue nadar, el país más afectado fue Australia, el grupo de edad más vulnerable fueron los jóvenes de 19 a 30 años y la estación más crítica fue el verano
+
+•	Recomendación: Focalizar prevención en nadadores, reforzar las medidas de seguridad de Australia y realizar campañas dirigidas a jóvenes adultos (19-30 años) en épocas criticas como el verano.
+
 
 
 
