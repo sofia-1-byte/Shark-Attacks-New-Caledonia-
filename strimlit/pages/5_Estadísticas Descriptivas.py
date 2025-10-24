@@ -10,7 +10,6 @@ st.set_page_config(
 )
 
 stilez.aplicar_estilos_globales()
-stilez.aplicar_estilos_tablas()
 
 # titulo principal
 st.title("Análisis Descriptivo de Datos")

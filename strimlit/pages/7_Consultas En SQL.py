@@ -14,7 +14,6 @@ st.set_page_config(
 col1, col2 = st.columns([3, 1])
 
 stilez.aplicar_estilos_globales()
-stilez.aplicar_estilos_tablas()
 
 # titulo principal
 st.title("Consultas SQL")

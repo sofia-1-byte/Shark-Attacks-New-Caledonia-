@@ -22,21 +22,17 @@ st.markdown("---")
 st.header("Objetivos Especificos")
 
 st.write("""
-• **Analizar las actividades humanas** para identificar las más riesgosas y su relación con la fatalidad.
+• **Analizar la letalidad de los ataques** para establecer la proporción porcentual exacta de incidentes clasificados como fatales (is_fatal = Y) dentro del total de registros.
 
-• **Examinar los países** para ubicar los de mayor incidencia y su distribución de casos fatales.
+• **Evaluar el riesgo por actividad** para identificar, mediante la frecuencia absoluta y relativa, la actividad humana (activity) que concentra el mayor número de ataques.
 
-• **Evaluar las estaciones del año** para determinar las más peligrosas y su asociación con la fatalidad.
+• **Delimitar la concentración geográfica de los incidentes** para visualizar y rankear los países (country) que registran la más alta frecuencia de ataques.
 
-• **Analizar la edad de las víctimas** para describir los grupos más afectados y su relación con la fatalidad.
+• **Analizar el perfil de la víctima** mediante el cálculo de la media y la mediana de la edad y la distribución de frecuencias.
 
-• **Investigar la tasa global de fatalidad** para establecer la proporción de ataques mortales.
+• **Establecer la distribución temporal de los ataques** a través del análisis de frecuencias agrupadas por estación (season), buscando patrones de ocurrencia.
 
-• **Analizar la relación entre actividad y fatalidad** para determinar las actividades con mayor letalidad.
-
-• **Examinar la distribución por grupos de edad** para identificar patrones de vulnerabilidad según la fatalidad.
-
-• **Evaluar las variaciones estacionales** para detectar cambios en la gravedad de los ataques.
+• **Examinar la relación entre variables y fatalidad** para analizar cómo la actividad, país, edad y estación se asocian con la letalidad de los incidentes mediante tablas de contingencia.
 """)
 
 st.markdown("---")
